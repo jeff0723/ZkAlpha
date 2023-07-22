@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {ERC4626} from "solmate/mixins/ERC4626.sol";
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
-import {FixedPointMathLib} from "solmatesutils/FixedPointMathLib.sol";
+import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
 
 /// @notice Minimal ERC4626 tokenized Vault implementation.
 /// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/mixins/ERC4626.sol)
@@ -76,9 +76,9 @@ contract Vault is ERC4626 {
         status = VaultStatus.Stage1;
         relayer = _relayer;
         currentBlockTime = block.timestamp;
-        openDuration = _openduration;
+        openDuration = _openDuration;
         strategyDuration = _strategyDuration;
-        withdrawalDuration = __withdrawalDuration;
+        withdrawalDuration = _withdrawalDuration;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -94,22 +94,6 @@ contract Vault is ERC4626 {
         }
         // Check for rounding error since we round down in previewDeposit.
         require((shares = previewDeposit(assets)) != 0, "ZERO_SHARES");
-
-        // Need to transfer before minting or ERC777s could reenter.
-        asset.safeTransferFrom(msg.sender, address(this), assets);
-
-        _mint(receiver, shares);
-
-        emit Deposit(msg.sender, receiver, assets, shares);
-
-        afterDeposit(assets, shares);
-    }
-
-    function mint(
-        uint256 shares,
-        address receiver
-    ) public virtual returns (uint256 assets) {
-        assets = previewMint(shares); // No need to check for rounding error, previewMint rounds up.
 
         // Need to transfer before minting or ERC777s could reenter.
         asset.safeTransferFrom(msg.sender, address(this), assets);
@@ -151,7 +135,7 @@ contract Vault is ERC4626 {
         uint256 shares,
         address receiver,
         address owner
-    ) public virtual returns (uint256 assets) {
+    ) public override returns (uint256 assets) {
         if (status != VaultStatus.Stage1 || status != VaultStatus.Stage1) {
             revert VaultClosedNoWithdrawal();
         }
@@ -175,14 +159,14 @@ contract Vault is ERC4626 {
         asset.safeTransfer(receiver, assets);
     }
 
-    function withdrawStrategist() {
+    function withdrawStrategist() public {
         if (msg.sender != strategist) {
             revert NotStrategist();
         }
         if (status != VaultStatus.Stage2) {
             revert VaultOpen();
         }
-        emit withdrawStrategist(
+        emit StrategistWithdraw(
             relayer,
             msg.sender,
             block.number,
@@ -197,77 +181,15 @@ contract Vault is ERC4626 {
     //////////////////////////////////////////////////////////////*/
 
     /// !!! pls review
-    function totalAssets() public view virtual returns (uint256) {
+    function totalAssets() public view override returns (uint256) {
         return address(this).balance;
-    }
-
-    function convertToShares(
-        uint256 assets
-    ) public view virtual returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? assets : assets.mulDivDown(supply, totalAssets());
-    }
-
-    function convertToAssets(
-        uint256 shares
-    ) public view virtual returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? shares : shares.mulDivDown(totalAssets(), supply);
-    }
-
-    function previewDeposit(
-        uint256 assets
-    ) public view virtual returns (uint256) {
-        return convertToShares(assets);
-    }
-
-    function previewMint(uint256 shares) public view virtual returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? shares : shares.mulDivUp(totalAssets(), supply);
-    }
-
-    function previewWithdraw(
-        uint256 assets
-    ) public view virtual returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? assets : assets.mulDivUp(supply, totalAssets());
-    }
-
-    function previewRedeem(
-        uint256 shares
-    ) public view virtual returns (uint256) {
-        return convertToAssets(shares);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                     DEPOSIT/WITHDRAWAL LIMIT LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-    function maxDeposit(address) public view virtual returns (uint256) {
-        return type(uint256).max;
-    }
-
-    function maxMint(address) public view virtual returns (uint256) {
-        return type(uint256).max;
-    }
-
-    function maxWithdraw(address owner) public view virtual returns (uint256) {
-        return convertToAssets(balanceOf[owner]);
-    }
-
-    function maxRedeem(address owner) public view virtual returns (uint256) {
-        return balanceOf[owner];
     }
 
     /*//////////////////////////////////////////////////////////////
                            Status Transition
     //////////////////////////////////////////////////////////////*/
 
-    function closeVault() {
+    function closeVault() public {
         if (msg.sender != strategist) {
             revert NotStrategist();
         }
@@ -283,7 +205,7 @@ contract Vault is ERC4626 {
         currentBlockTime = block.timestamp;
     }
 
-    function terminateStrategy() {
+    function terminateStrategy() public {
         if (msg.sender != strategist) {
             revert NotStrategist();
         }
@@ -298,7 +220,7 @@ contract Vault is ERC4626 {
         currentBlockTime = block.timestamp;
     }
 
-    function openVault() {
+    function openVault() public {
         if (msg.sender != strategist) {
             revert NotStrategist();
         }
@@ -317,7 +239,7 @@ contract Vault is ERC4626 {
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function beforeWithdraw(uint256 assets, uint256 shares) internal virtual {}
+    // function beforeWithdraw(uint256 assets, uint256 shares) internal virtual {}
 
-    function afterDeposit(uint256 assets, uint256 shares) internal virtual {}
+    // function afterDeposit(uint256 assets, uint256 shares) internal virtual {}
 }
