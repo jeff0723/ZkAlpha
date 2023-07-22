@@ -8,7 +8,7 @@ interface IHasher {
     ) external pure returns (uint256 xL, uint256 xR);
 }
 
-contract MerkleTreeWithHistory {
+contract MerkleTree {
     uint256 public constant FIELD_SIZE =
         21888242871839275222246405745257275088548364400416034343698204186575808495617;
     uint256 public constant ZERO_VALUE =
@@ -23,9 +23,7 @@ contract MerkleTreeWithHistory {
     // filledSubtrees and roots could be bytes32[size], but using mappings makes it cheaper because
     // it removes index range check on every interaction
     mapping(uint256 => bytes32) public filledSubtrees;
-    mapping(uint256 => bytes32) public roots;
-    uint32 public constant ROOT_HISTORY_SIZE = 30;
-    uint32 public currentRootIndex = 0;
+    bytes32 public root;
     uint32 public nextIndex = 0;
 
     constructor(uint32 _levels, IHasher _hasher) {
@@ -38,7 +36,7 @@ contract MerkleTreeWithHistory {
             filledSubtrees[i] = zeros(i);
         }
 
-        roots[0] = zeros(_levels - 1);
+        root = zeros(_levels - 1);
     }
 
     /**
@@ -89,39 +87,8 @@ contract MerkleTreeWithHistory {
             currentIndex /= 2;
         }
 
-        uint32 newRootIndex = (currentRootIndex + 1) % ROOT_HISTORY_SIZE;
-        currentRootIndex = newRootIndex;
-        roots[newRootIndex] = currentLevelHash;
         nextIndex = _nextIndex + 1;
         return _nextIndex;
-    }
-
-    /**
-    @dev Whether the root is present in the root history
-  */
-    function isKnownRoot(bytes32 _root) public view returns (bool) {
-        if (_root == 0) {
-            return false;
-        }
-        uint32 _currentRootIndex = currentRootIndex;
-        uint32 i = _currentRootIndex;
-        do {
-            if (_root == roots[i]) {
-                return true;
-            }
-            if (i == 0) {
-                i = ROOT_HISTORY_SIZE;
-            }
-            i--;
-        } while (i != _currentRootIndex);
-        return false;
-    }
-
-    /**
-    @dev Returns the last root
-  */
-    function getLastRoot() public view returns (bytes32) {
-        return roots[currentRootIndex];
     }
 
     /// @dev provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels

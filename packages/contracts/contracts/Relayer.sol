@@ -1,14 +1,33 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {MerkleTreeWithHistory, IHasher} from "./MerkleTreeWithHistory.sol";
+import {MerkleTree, IHasher} from "./MerkleTree.sol";
 import {ERC20} from "solmate/tokens/ERC20.sol";
-import {Verifier} from "./Verifier.sol";
 import {Vault} from "./Vault.sol";
+import {
+    IDepositVerifier,
+    IWithdrawVerifier,
+    ISwapVerifier,
+    IFinalizeVerifier
+} from "./IVerifier.sol";
 
-contract Relayer is MerkleTreeWithHistory {
-    ERC20 public immutable TOKEN;
-    Verifier public verifier;
+struct ModelOutput {
+    uint8 direction;
+    uint248 amount;
+}
+
+struct ModelInput {
+    uint256 chainlinkPrice;
+}
+
+contract Relayer is MerkleTree {
+    
+    ERC20 immutable public TOKEN;
+    IDepositVerifier public depositVerifier;
+    IWithdrawVerifier public withdrawVerifier;
+    ISwapVerifier public swapVerifier;
+    IFinalizeVerifier public finalizeVerifier;
+    ModelInput public modelInput;
     mapping(bytes => Vault) public vaultMap;
 
     mapping(bytes32 => bool) public nullifierHashes;
@@ -16,37 +35,45 @@ contract Relayer is MerkleTreeWithHistory {
 
     constructor(
         ERC20 _token,
-        Verifier _verifier,
-        IHasher _hasher,
-        uint32 _merkleTreeHeight
-    ) MerkleTreeWithHistory(_merkleTreeHeight, _hasher) {
+        IDepositVerifier _depositVerifier,
+        IWithdrawVerifier _withdrawVerifier,
+        ISwapVerifier _swapVerifier,
+        IFinalizeVerifier _finalizeVerifier,
+        IHasher _hasher
+    ) MerkleTree(32, _hasher) {
         TOKEN = _token;
-        verifier = _verifier;
+        depositVerifier = _depositVerifier;
+        withdrawVerifier = _withdrawVerifier;
+        swapVerifier = _swapVerifier;
+        finalizeVerifier = _finalizeVerifier;
     }
 
-    /*//////////////////////////////////////////////////////////////
-                               Depositing 
-    //////////////////////////////////////////////////////////////*/
+    function deposit() public {
 
-    function deposit(bytes32 _commitment) external payable nonReentrant {
-        require(!commitments[_commitment], "The commitment has been submitted");
-
-        uint32 insertedIndex = _insert(_commitment);
-        commitments[_commitment] = true;
-        _processDeposit();
-
-        emit Deposit(_commitment, insertedIndex, block.timestamp);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            EVENTS and Errors
-    //////////////////////////////////////////////////////////////*/
+    function withdraw() public {
 
-    /*//////////////////////////////////////////////////////////////
-                            EVENTS and Errors
-    //////////////////////////////////////////////////////////////*/
+    }
 
-    /*//////////////////////////////////////////////////////////////
-                            EVENTS and Errors
-    //////////////////////////////////////////////////////////////*/
+    function finalize() public {
+
+    }
+
+    function transact(
+        bytes calldata _proof,
+        bytes32 _nullifier,
+        ModelOutput calldata modelOutput
+    ) public {
+        uint256[4] memory _publicInputs;
+        _publicInputs[0] = uint256(root);
+        _publicInputs[1] = uint256(_nullifier);
+        _publicInputs[2] = modelInput.chainlinkPrice;
+        _publicInputs[3] = uint256(bytes32(abi.encodePacked(modelOutput.direction, modelOutput.amount)));
+
+        require(
+            swapVerifier.verify(_publicInputs, _proof),
+            "Swap Verifier failed"
+        );
+    }
 }

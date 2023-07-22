@@ -29,50 +29,11 @@ const config: HardhatUserConfig = {
       },
       chainId: 1337,
     },
-    neontestnet: {
-      url: process.env.NEONTESTNETRPCURL || "",
-      accounts: [process.env.GNOSISPK || ""],
-      chainId: 245022926
-    },
-    mantletestnet: {
-      url: process.env.MANTLETESTNETRPCURL || "",
-      accounts: [process.env.GNOSISPK || ""],
-      chainId: 5001
-    },
-    celotestnet: {
-      url: process.env.CELOTESNETRPCURL || "",
-      accounts: [process.env.GNOSISPK || ""],
-      chainId: 42220,
-    },
     gnosis: {
       allowUnlimitedContractSize: true,
-      url: process.env.GNOSISRPCURL || "",
-      accounts: [process.env.GNOSISPK || ""],
+      url: "https://rpc.gnosischain.com",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 100,
-    },
-    aurora: {
-      allowUnlimitedContractSize: true,
-      url: process.env.AURORARPCURL || "",
-      accounts: [process.env.GNOSISPK || ""],
-      chainId: 1313161554,
-    },
-    auroratestnet: {
-      allowUnlimitedContractSize: true,
-      url: process.env.AURORATESTRPCURL || "",
-      accounts: [process.env.GNOSISPK || ""],
-      chainId: 1313161555,
-    },
-    polygonzkevm: {
-      allowUnlimitedContractSize: true,
-      url: process.env.POLYGONZKEVMRPCURL || "",
-      accounts: [process.env.GNOSISPK || ""],
-      chainId: 1101,
-    },
-    mainnet: {
-      url: process.env.MAINNETRPCURL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-      chainId: 1,
     },
   },
   etherscan: {
