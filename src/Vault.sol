@@ -23,33 +23,31 @@ contract Vault is ERC4626 {
         uint blocktime
     );
 
-    // event Deposit(
-    //     address indexed caller,
-    //     address indexed owner,
-    //     uint256 assets,
-    //     uint256 shares
-    // );
-
-    // event Withdraw(
-    //     address indexed caller,
-    //     address indexed receiver,
-    //     address indexed owner,
-    //     uint256 assets,
-    //     uint256 shares
-    // );
-
     error NotStrategist();
 
     error VaultClosedNoDeposit();
 
     error VaultClosedNoWithdrawal();
 
+    error VaultOpen();
+
+    error WrongStatus();
+
     /*//////////////////////////////////////////////////////////////
                                IMMUTABLES
     //////////////////////////////////////////////////////////////*/
 
     address public immutable strategist;
+
     address public immutable relayer;
+
+    uint public immutable openDuration;
+
+    uint public strategyDuration;
+
+    uint public withdrawalDuration;
+
+    uint public currentBlockTime;
 
     VaultStatus status;
 
@@ -69,16 +67,19 @@ contract Vault is ERC4626 {
         string memory _name,
         string memory _symbol,
         address _strategist,
-        address _relayer
+        address _relayer,
+        uint _openDuration,
+        uint _strategyDuration,
+        uint _withdrawalDuration
     ) ERC4626(_asset, _name, _symbol) {
         strategist = _strategist;
         status = VaultStatus.Stage1;
         relayer = _relayer;
+        currentBlockTime = block.timestamp;
+        openDuration = _openduration;
+        strategyDuration = _strategyDuration;
+        withdrawalDuration = __withdrawalDuration;
     }
-
-    /*//////////////////////////////////////////////////////////////
-                               Timelock
-    //////////////////////////////////////////////////////////////*/
 
     /*//////////////////////////////////////////////////////////////
                         DEPOSIT/WITHDRAWAL LOGIC
@@ -178,6 +179,9 @@ contract Vault is ERC4626 {
         if (msg.sender != strategist) {
             revert NotStrategist();
         }
+        if (status != VaultStatus.Stage2) {
+            revert VaultOpen();
+        }
         emit withdrawStrategist(
             relayer,
             msg.sender,
@@ -254,6 +258,56 @@ contract Vault is ERC4626 {
 
     function maxRedeem(address owner) public view virtual returns (uint256) {
         return balanceOf[owner];
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                           Status Transition
+    //////////////////////////////////////////////////////////////*/
+
+    function closeVault() {
+        if (msg.sender != strategist) {
+            revert NotStrategist();
+        }
+        if (block.timestamp < currentBlockTime + openDuration) {
+            revert VaultOpen();
+        }
+
+        if (status != VaultStatus.Stage1) {
+            revert WrongStatus();
+        }
+
+        status = VaultStatus.Stage2;
+        currentBlockTime = block.timestamp;
+    }
+
+    function terminateStrategy() {
+        if (msg.sender != strategist) {
+            revert NotStrategist();
+        }
+        if (block.timestamp < currentBlockTime + strategyDuration) {
+            revert WrongStatus();
+        }
+        if (status != VaultStatus.Stage2) {
+            revert WrongStatus();
+        }
+
+        status = VaultStatus.Stage3;
+        currentBlockTime = block.timestamp;
+    }
+
+    function openVault() {
+        if (msg.sender != strategist) {
+            revert NotStrategist();
+        }
+        if (block.timestamp < currentBlockTime + withdrawalDuration) {
+            revert WrongStatus();
+        }
+        if (status != VaultStatus.Stage3) {
+            revert WrongStatus();
+        }
+
+        status = VaultStatus.Stage1;
+        currentBlockTime = block.timestamp;
     }
 
     /*//////////////////////////////////////////////////////////////
