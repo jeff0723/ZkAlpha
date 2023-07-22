@@ -31,22 +31,29 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 ## Defining the circuit, TOMO
 Field = int
+M = 1e9+7
 
+class Hasher(): 
+    def hash2(self, x1, x2) -> Field:
+        return x1 + x2 % M
+    def hash_list(self, xs: List[Field]) -> Field:
+        ans = 0
+        for x in xs:
+             ans = self.hash2(ans, x)
+        return ans
 
-def hashLR(l: Field, r: Field) -> Field:
-        return l+r
-
-class MyModel(nn.Module):
+class MerkleProofModel(nn.Module):
     def __init__(self):
-        super(MyModel, self).__init__()
+        super(MerkleProofModel, self).__init__()
+        self.hasher = Hasher()
 
     def verify_merkle_proof(self, leaf: Field, index: Field, merkle_path: List[Field]):
         current_hash = leaf
         for sibling in merkle_path:
             if index % 2 == 0:
-                current_hash = hashLR(current_hash, sibling)
+                current_hash = self.hasher.hash2(current_hash, sibling)
             else:
-                current_hash = hashLR(sibling, current_hash)
+                current_hash = self.hasher.hash2(sibling, current_hash)
             index = index // 2
         return current_hash - merkle_path[-1]
 
@@ -54,12 +61,20 @@ class MyModel(nn.Module):
         leaf, index, *path = x # assume len(path) == height of the tree
         return self.verify_merkle_proof(leaf, index, path)
 
-def export_circuit():
-    circuit = MyModel()
-    circuit.eval()
-    # x = 0.1*torch.rand(1,*[3, 8, 8], requires_grad=True) # TOMO
-    x = torch.asarray([1, 0, 1, 1])
+class DepositProofModel(nn.Module):
+    def __init__(self):
+        super(DepositProofModel, self).__init__()
+        self.hasher = Hasher()
 
+    def forward(self, x):
+        k, s, b1, b2, cModel, cNode = x
+        return self.hasher.hash_list([k, s, b1, b2, cModel]) - cNode 
+
+
+
+def export_circuit(Model, x):
+    circuit = Model()
+    circuit.eval()
     torch.onnx.export(circuit,               # model being run
                         x,                   # model input (or a tuple for multiple inputs)
                         "network.onnx",            # where to save the model (can be a file or file-like object)
@@ -75,20 +90,13 @@ def export_circuit():
     data = dict(input_data = [data_array])
     json.dump( data, open("input.json", 'w' ))
 
-def generate_settings():
+def generate_settings(visibility_settings):
     run_args = ezkl.PyRunArgs()
-    run_args.input_visibility = "public"
-    run_args.param_visibility = "hashed"
-    run_args.output_visibility = "public"
-
+    run_args.input_visibility, run_args.param_visibility, run_args.output_visibility = visibility_settings
     res = ezkl.gen_settings(model_path, settings_path, py_run_args=run_args)
     assert res == True
 
-async def test_proof_and_verification():
-    ## calibration data, TOMO
-    cal_data = {
-        "input_data": [(0.1*torch.rand(40, *[3, 8, 8])).flatten().tolist()],
-    }
+async def test_proof_and_verification(cal_data):
     cal_path = os.path.join('val_data.json')
     with open(cal_path, "w") as f:
         json.dump(cal_data, f)
@@ -124,7 +132,6 @@ def prove():
             "single",
             settings_path,
         )
-
     print(res)
 
 def verify():
@@ -169,9 +176,16 @@ def call_evm_verifier(addr):
 
 
 def main():
-    export_circuit()
-    generate_settings()
-    test_proof_and_verification()
+    # TOMO
+    x = torch.asarray([1, 1, 1, 1, 1, 5])
+    visibility_settings = ["public", "hashed", "public"]
+    cal_data = {
+        "input_data": [(0.1*torch.rand(40, *[3, 8, 8])).flatten().tolist()],
+    }
+
+    export_circuit(Model=DepositProofModel, x=x)
+    generate_settings(visibility_settings=visibility_settings)
+    test_proof_and_verification(cal_data=cal_data)
     generate_keys()
     prove()
     verify()
