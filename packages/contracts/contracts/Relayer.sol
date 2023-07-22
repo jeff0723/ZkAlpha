@@ -69,13 +69,10 @@ contract Relayer is MerkleTree {
         _publicInputs[2] = uint256(_balanceA);
         _publicInputs[3] = uint256(_balanceB);
         _publicInputs[4] = uint256(uint160(_vault));
-        require(
-            msg.sender == _vault,
-            "Deposit not trader"
-        );
+        require(msg.sender == _vault, "not trader");
         require(
             depositVerifier.verify(_publicInputs, _proof),
-            "Deposit Verifier failed"
+            "deposit: verify failed"
         );
 
         TOKEN_A.transferFrom(_vault, address(this), _balanceA);
@@ -97,13 +94,10 @@ contract Relayer is MerkleTree {
         _publicInputs[2] = uint256(_balanceA);
         _publicInputs[3] = uint256(_balanceB);
         _publicInputs[4] = uint256(uint160(_vault));
-        require(
-            msg.sender == _vault,
-            "Withdraw not trader"
-        );
+        require(msg.sender == _vault, "not trader");
         require(
             withdrawVerifier.verify(_publicInputs, _proof),
-            "Withdraw Verifier failed"
+            "withdraw: verify failed"
         );
 
         TOKEN_A.transferFrom(address(this), _vault, _balanceA);
@@ -124,10 +118,11 @@ contract Relayer is MerkleTree {
         _publicInputs[3] = uint256(bytes32(abi.encodePacked(modelOutput.direction, modelOutput.amount)));
         require(
             swapVerifier.verify(_publicInputs, _proof),
-            "Swap Verifier failed"
+            "transact: verify failed"
         );
 
-        transactionResults[_nullifier] = _transact(modelOutput);
+        // TODO transactionResults[_nullifier] = _transact(modelOutput);
+        transactionResults[_nullifier] = TxResult(0, 0, 0);
         nodeStatusPool[_nullifier] = NodeStatus.TRANSACTED;
     }
 
@@ -148,10 +143,5 @@ contract Relayer is MerkleTree {
         MerkleTree._insert(_cNode2);
         delete transactionResults[_nullifier];
         nodeStatusPool[_nullifier] = NodeStatus.NULLIFIED;
-    }
-
-    function _transact(ModelOutput calldata _modelOutput) private pure returns (TxResult memory) {
-        // TODO swap with 1inch aggregator
-        return TxResult(0, 0, 0);
     }
 }
