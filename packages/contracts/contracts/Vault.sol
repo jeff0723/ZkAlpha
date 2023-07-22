@@ -1,267 +1,91 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
-
 import {ERC20} from "solmate/tokens/ERC20.sol";
-import {ERC4626} from "solmate/mixins/ERC4626.sol";
-import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
-import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
-import {IGenericRouter} from "./interfaces/I1nchRouter.sol";
+import {Owned} from "solmate/auth/Owned.sol";
 
-/// @notice Minimal ERC4626 tokenized Vault implementation.
-/// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/mixins/ERC4626.sol)
-contract Vault is ERC4626 {
-    using SafeTransferLib for ERC20;
-    using FixedPointMathLib for uint256;
-
-    /*//////////////////////////////////////////////////////////////
-                            EVENTS and Errors
-    //////////////////////////////////////////////////////////////*/
-
-    event StrategistWithdraw(
-        address indexed relayer,
-        address indexed strategist,
-        uint blocknumber,
-        uint blocktime
-    );
-
-    error NotStrategist();
-
-    error VaultClosedNoDeposit();
-
-    error VaultClosedNoWithdrawal();
-
-    error VaultOpen();
-
-    error WrongStatus();
-
-    /*//////////////////////////////////////////////////////////////
-                               IMMUTABLES
-    //////////////////////////////////////////////////////////////*/
-
-    address public immutable strategist;
-
-    address public immutable relayer;
-
-    uint public immutable openDuration;
-
-    uint public strategyDuration;
-
-    uint public withdrawalDuration;
-
-    uint public currentBlockTime;
-
-    bytes32 public modelHash;
-
-    VaultStatus public status;
-
-    IGenericRouter public immutable oneInchRouter;
-
-    /**
-     * Stage 1 = can deposit, can withdraw, strageist cannot withdraw
-     * Stage 2 = cannot deposit, cannot withdraw, strategist can withdraw
-     * Stage 3 = cannot deposit, can withdraw, strategist cannot withdraw
-     */
-    enum VaultStatus {
-        Stage1,
-        Stage2,
-        Stage3
-    }
-
-    constructor(
-        ERC20 _asset,
-        string memory _name,
-        string memory _symbol,
-        address _strategist,
-        address _relayer,
-        uint _openDuration,
-        uint _strategyDuration,
-        uint _withdrawalDuration,
-        bytes32 _modelHash,
-        address _oneInchAddress
-    ) ERC4626(_asset, _name, _symbol) {
-        strategist = _strategist;
-        status = VaultStatus.Stage1;
-        relayer = _relayer;
-        currentBlockTime = block.timestamp;
-        openDuration = _openDuration;
-        strategyDuration = _strategyDuration;
-        withdrawalDuration = _withdrawalDuration;
-        modelHash = _modelHash;
-        oneInchRouter = IGenericRouter(_oneInchAddress);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        DEPOSIT/WITHDRAWAL LOGIC
-    //////////////////////////////////////////////////////////////*/
-
+interface IRelayer {
     function deposit(
-        uint256 assets,
-        address receiver
-    ) public override returns (uint256 shares) {
-        if (status != VaultStatus.Stage1) {
-            revert VaultClosedNoDeposit();
-        }
-        // Check for rounding error since we round down in previewDeposit.
-        require((shares = previewDeposit(assets)) != 0, "ZERO_SHARES");
-
-        // Need to transfer before minting or ERC777s could reenter.
-        asset.safeTransferFrom(msg.sender, address(this), assets);
-
-        _mint(receiver, shares);
-
-        emit Deposit(msg.sender, receiver, assets, shares);
-
-        afterDeposit(assets, shares);
-    }
-
-    function mint(
-        uint256 shares,
-        address receiver
-    ) public virtual override returns (uint256 assets) {
-        assets = previewMint(shares); // No need to check for rounding error, previewMint rounds up.
-
-        // Need to transfer before minting or ERC777s could reenter.
-        asset.safeTransferFrom(msg.sender, address(this), assets);
-
-        _mint(receiver, shares);
-
-        emit Deposit(msg.sender, receiver, assets, shares);
-
-        afterDeposit(assets, shares);
-    }
+        bytes32 _cNode,
+        bytes32 _cModel,
+        uint256 _balanceA,
+        uint256 _balanceB,
+        bytes calldata _proof
+    ) external returns (uint32);
 
     function withdraw(
-        uint256 assets,
-        address receiver,
-        address owner
-    ) public override returns (uint256 shares) {
-        if (status != VaultStatus.Stage1 || status != VaultStatus.Stage1) {
-            revert VaultClosedNoWithdrawal();
-        }
-        shares = previewWithdraw(assets); // No need to check for rounding error, previewWithdraw rounds up.
+        bytes32 _nullifier,
+        uint256 _balanceA,
+        uint256 _balanceB,
+        address _vault,
+        bytes calldata _proof
+    ) external;
 
-        if (msg.sender != owner) {
-            uint256 allowed = allowance[owner][msg.sender]; // Saves gas for limited approvals.
+    function TOKEN_A() external returns (ERC20);
+    function TOKEN_B() external returns (ERC20);
+}
 
-            if (allowed != type(uint256).max)
-                allowance[owner][msg.sender] = allowed - shares;
-        }
+enum VaultState {
+    DEPOSIT,
+    WAITING,
+    WITHDRAW
+}
 
-        beforeWithdraw(assets, shares);
+contract Vault is Owned {
+    
+    IRelayer immutable public relayer;
+    bytes32 public cModel;
+    mapping(address => uint256) public userWeights;
+    uint256 public totalWeights;
+    uint256 public afterBalance;
+    VaultState public state;
 
-        _burn(owner, shares);
-
-        emit Withdraw(msg.sender, receiver, owner, assets, shares);
-
-        asset.safeTransfer(receiver, assets);
+    constructor(
+        IRelayer _relayer,
+        address _trader,
+        bytes32 _cModel
+    ) Owned(_trader) {
+        relayer = _relayer;
+        cModel = _cModel;
+        relayer.TOKEN_A().approve(address(relayer), type(uint256).max);
+        relayer.TOKEN_B().approve(address(relayer), type(uint256).max);
     }
 
-    function redeem(
-        uint256 shares,
-        address receiver,
-        address owner
-    ) public virtual override returns (uint256 assets) {
-        if (status != VaultStatus.Stage1 || status != VaultStatus.Stage1) {
-            revert VaultClosedNoWithdrawal();
-        }
-
-        if (msg.sender != owner) {
-            uint256 allowed = allowance[owner][msg.sender]; // Saves gas for limited approvals.
-
-            if (allowed != type(uint256).max)
-                allowance[owner][msg.sender] = allowed - shares;
-        }
-
-        // Check for rounding error since we round down in previewRedeem.
-        require((assets = previewRedeem(shares)) != 0, "ZERO_ASSETS");
-
-        beforeWithdraw(assets, shares);
-
-        _burn(owner, shares);
-
-        emit Withdraw(msg.sender, receiver, owner, assets, shares);
-
-        asset.safeTransfer(receiver, assets);
+    modifier requireState(VaultState _state) {
+        require(state == _state, "Invalid Vault state");
+        _;
     }
 
-    function depositToRelayer(bytes32 committment) public {
-        if (msg.sender != strategist) {
-            revert NotStrategist();
-        }
-        if (status != VaultStatus.Stage2) {
-            revert VaultOpen();
-        }
-        emit StrategistWithdraw(
-            relayer,
-            msg.sender,
-            block.number,
-            block.timestamp
-        );
-
-        // !!! swap assets into 50/50 pair and WETH
-        // !!! send both assets to relayer
-
-        // IGenericRouter.swap();
-
-        // relayer.transfer(address(this).balance);
+    function userDeposit(uint256 amount) public requireState(VaultState.DEPOSIT) {
+        relayer.TOKEN_A().transferFrom(msg.sender, address(this), amount);
+        userWeights[msg.sender] += amount;
+        totalWeights += amount;
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            ACCOUNTING LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-    /// !!! need to chance to erc20 support
-    function totalAssets() public view override returns (uint256) {
-        return asset.balanceOf(address(this));
+    function depositToRelayer(
+        bytes32 _cNode,
+        bytes calldata _proof
+    ) public requireState(VaultState.DEPOSIT) onlyOwner {
+        // TODO swap A to B and make 50 50
+        uint256 balanceA = relayer.TOKEN_A().balanceOf(address(this));
+        uint256 balanceB = relayer.TOKEN_B().balanceOf(address(this));
+        relayer.deposit(_cNode, cModel, balanceA, balanceB, _proof);
+        state = VaultState.WAITING;
     }
 
-    /*//////////////////////////////////////////////////////////////
-                           Status Transition
-    //////////////////////////////////////////////////////////////*/
-
-    function closeVault() public {
-        if (msg.sender != strategist) {
-            revert NotStrategist();
-        }
-        if (block.timestamp < currentBlockTime + openDuration) {
-            revert VaultOpen();
-        }
-
-        if (status != VaultStatus.Stage1) {
-            revert WrongStatus();
-        }
-
-        status = VaultStatus.Stage2;
-        currentBlockTime = block.timestamp;
+    function withdrawFromRelayer(
+        bytes32 _nullifier,
+        uint256 _balanceA,
+        uint256 _balanceB,
+        bytes calldata _proof
+    ) public requireState(VaultState.WAITING) onlyOwner {
+        relayer.withdraw(_nullifier, _balanceA, _balanceB, address(this), _proof);
+        // TODO swap B to A
+        afterBalance = relayer.TOKEN_A().balanceOf(address(this));
+        state = VaultState.WITHDRAW;
     }
 
-    function terminateStrategy() public {
-        if (msg.sender != strategist) {
-            revert NotStrategist();
-        }
-        if (block.timestamp < currentBlockTime + strategyDuration) {
-            revert WrongStatus();
-        }
-        if (status != VaultStatus.Stage2) {
-            revert WrongStatus();
-        }
-
-        status = VaultStatus.Stage3;
-        currentBlockTime = block.timestamp;
-    }
-
-    function openVault() public {
-        if (msg.sender != strategist) {
-            revert NotStrategist();
-        }
-        if (block.timestamp < currentBlockTime + withdrawalDuration) {
-            revert WrongStatus();
-        }
-        if (status != VaultStatus.Stage3) {
-            revert WrongStatus();
-        }
-
-        status = VaultStatus.Stage1;
-        currentBlockTime = block.timestamp;
+    function userWithdraw(address to) public requireState(VaultState.WITHDRAW) {       
+        uint256 amount = afterBalance * userWeights[to] / totalWeights;
+        relayer.TOKEN_A().transferFrom(address(this), to, amount);
     }
 }

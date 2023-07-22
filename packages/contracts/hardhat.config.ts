@@ -32,63 +32,63 @@ const config: HardhatUserConfig = {
     },
   neontestnet: {
     url: process.env.NEONTESTNETRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 245022926
   },
   mantletestnet: {
     url: process.env.MANTLETESTNETRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 5001
   },
   celotestnet: {
     url: process.env.CELOTESNETRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 44787,
   },
   gnosis: {
     url: process.env.GNOSISRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 100,
   },
   aurora: {
     url: process.env.AURORARPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 1313161554,
   },
   auroratestnet: {
     url: process.env.AURORATESTRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 1313161555,
   },
   polygonzkevm: {
     url: process.env.POLYGONZKEVMRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 1101,
   },
   polygonzkevmtestnet: {
     url: process.env.POLYGONZKEVMTESTNETRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 1442,
   },
   mainnet: {
     url: process.env.MAINNETRPCURL || "",
     accounts:
-      process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 1,
   },
   linea: {
     url: process.env.LINEARPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 59140, 
   }, 
   filecoinCalibration: {
     url: process.env.FILECOINTESTNETRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 314159, 
   }, 
   zetachaintestnet: {
     url: process.env.ZETACHAINRPCURL || "",
-    accounts: [process.env.GNOSISPK || ""],
+    accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     chainId: 7001, 
   }
 },

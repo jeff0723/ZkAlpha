@@ -3,14 +3,14 @@ pragma solidity ^0.8.17;
 
 interface IDepositVerifier {
     function verify(
-        uint256[3] calldata _publicInputs,
+        uint256[5] calldata _publicInputs,
         bytes calldata _proof
     ) external view returns (bool);
 }
 
 interface IWithdrawVerifier {
     function verify(
-        uint256[3] calldata _publicInputs,
+        uint256[5] calldata _publicInputs,
         bytes calldata _proof
     ) external view returns (bool);
 }
