@@ -4,7 +4,10 @@ pragma solidity ^0.8.0;
 
 import "../libraries/SafeERC20.sol";
 import "../libraries/UniERC20.sol";
-
+interface IAggregationExecutor {
+    /// @notice propagates information about original msg.sender and executes arbitrary data
+    function execute(address msgSender) external payable;  // 0x4b64e492
+}
 interface IGenericRouter {
     using UniERC20 for IERC20;
     using SafeERC20 for IERC20;
