@@ -26,7 +26,8 @@ const index = (props: Props) => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                     >
-                        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-gray-100 rounded-md bg-gray-700 bg-opacity-40 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+
+                        <Menu.Items className="absolute z-10 right-0 mt-2 w-56 origin-top-right divide-gray-100 rounded-md bg-[#121219] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             <div className='p-4 hover:bg-opacity-20 hover:bg-gray-700'>
                                 <Menu.Item >
                                     {({ active }) => (
@@ -67,7 +68,7 @@ const index = (props: Props) => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                     >
-                        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-gray-100 rounded-md bg-gray-700 bg-opacity-40 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Items className="absolute z-10 right-0 mt-2 w-56 origin-top-right divide-gray-100 rounded-md bg-[#121219] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             <div className='p-4 hover:bg-opacity-20 hover:bg-gray-700'>
                                 <Menu.Item >
                                     {({ active }) => (
