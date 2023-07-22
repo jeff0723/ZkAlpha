@@ -39,6 +39,13 @@ contract Relayer is IRelayer, MerkleTree {
     mapping(bytes32 => NodeStatus) public nodeStatusPool;
     mapping(bytes32 => TxResult) public transactionResults;
 
+    event UploadModel(
+        address indexed relayer,
+        address indexed trader,
+        address vault,
+        bytes32 modelCommitment
+    );
+
     constructor(
         ERC20 _tokenA,
         ERC20 _tokenB,
@@ -47,7 +54,7 @@ contract Relayer is IRelayer, MerkleTree {
         ISwapVerifier _swapVerifier,
         IFinalizeVerifier _finalizeVerifier,
         IHasher _hasher
-    ) MerkleTree(32, _hasher) {
+    ) MerkleTree(8, _hasher) {
         TOKEN_A = _tokenA;
         TOKEN_B = _tokenB;
         depositVerifier = _depositVerifier;
@@ -146,6 +153,8 @@ contract Relayer is IRelayer, MerkleTree {
     }
 
     function uploadModel(bytes32 _cModel) public returns(Vault) {
-        return new Vault(IRelayer(address(this)), msg.sender, _cModel);
+        Vault vault = new Vault(IRelayer(address(this)), msg.sender, _cModel);
+        emit UploadModel(address(this), msg.sender, address(vault), _cModel);
+        return vault;
     }
 }

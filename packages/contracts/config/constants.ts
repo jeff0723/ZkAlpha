@@ -1,4 +1,4 @@
-export const CONSTANTS = {
+export const DEPLOY_CONFIG = {
     mainnet: {
         rpcURL: "https://rpc.ankr.com/eth", 
         usdcContractAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -8,7 +8,7 @@ export const CONSTANTS = {
         rpcURL:"https://rpc.ankr.com/eth_goerli",
         usdcContractAddress: "0xd35CCeEAD182dcee0F148EbaC9447DA2c4D449c4",
         wethContractAddress: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
-    }, 
+    },
     // does not have WETH
     mantletestnet: {
         rpcURL: "https://rpc.testnet.mantle.xyz",
@@ -42,6 +42,11 @@ export const CONSTANTS = {
         rpcURL: "https://rpc.goerli.linea.build/",
         usdcContractAddress: "0x6d8727B664D3f877de683F836E75EB2de47FD197",
         wethContractAddress: "0x2C1b868d6596a18e32E61B901E4060C872647b6C"
+    },
+    hardhat: {
+        rpcURL: "",
+        usdcContractAddress: "",
+        wethContractAddress: ""
     }
 }
 
