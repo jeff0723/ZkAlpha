@@ -35,7 +35,7 @@ contract Vault is ERC4626 {
     function deposit(
         uint256 assets,
         address receiver
-    ) public virtual returns (uint256 shares) {
+    ) public override returns (uint256 shares) {
         // Check for rounding error since we round down in previewDeposit.
         require((shares = previewDeposit(assets)) != 0, "ZERO_SHARES");
 
