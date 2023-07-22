@@ -1,1 +1,7 @@
 node_modules
+command.txt
+.env    
+packages
+out
+lib
+cache   
