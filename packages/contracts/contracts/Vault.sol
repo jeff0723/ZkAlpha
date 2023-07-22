@@ -223,7 +223,9 @@ contract Vault is ERC4626 {
         return convertToShares(assets);
     }
 
-    function previewMint(uint256 shares) public view override returns (uint256) {
+    function previewMint(
+        uint256 shares
+    ) public view override returns (uint256) {
         uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
 
         return supply == 0 ? shares : shares.mulDivUp(totalAssets(), supply);
@@ -317,7 +319,13 @@ contract Vault is ERC4626 {
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function beforeWithdraw(uint256 assets, uint256 shares) internal override virtual {}
+    function beforeWithdraw(
+        uint256 assets,
+        uint256 shares
+    ) internal virtual override {}
 
-    function afterDeposit(uint256 assets, uint256 shares) internal override virtual {}
+    function afterDeposit(
+        uint256 assets,
+        uint256 shares
+    ) internal virtual override {}
 }
