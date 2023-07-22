@@ -196,7 +196,10 @@ contract Vault is ERC4626 {
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function totalAssets() public view virtual returns (uint256);
+    /// !!! pls review
+    function totalAssets() public view virtual returns (uint256) {
+        return address(this).balance;
+    }
 
     function convertToShares(
         uint256 assets
