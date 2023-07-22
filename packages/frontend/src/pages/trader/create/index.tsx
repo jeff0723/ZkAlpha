@@ -13,7 +13,10 @@ const assetPairs = [
     'ETH/ USDX'
 ]
 const CreateVaultPage = (props: Props) => {
+    const [vaultName, setVaultName] = useState()
+    const [frequency, setFrequency] = useState()
     const [assetPair, setAssetPair] = useState()
+    const [modelHash, setModelHash] = useState()
 
     return (
         <div className='flex justify-center'>
