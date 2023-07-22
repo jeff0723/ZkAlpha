@@ -180,7 +180,7 @@ contract Vault is ERC4626 {
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    /// !!! pls review
+    /// !!! pls review in regards to the 4626 implementation
     function totalAssets() public view override returns (uint256) {
         return address(this).balance;
     }
