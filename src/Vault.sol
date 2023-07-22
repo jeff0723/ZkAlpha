@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {ERC4626} from "solmate/mixins/ERC4626.sol";
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
-import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
+import {FixedPointMathLib} from "solmatesutils/FixedPointMathLib.sol";
 
 /// @notice Minimal ERC4626 tokenized Vault implementation.
 /// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/mixins/ERC4626.sol)
@@ -13,20 +13,72 @@ contract Vault is ERC4626 {
     using FixedPointMathLib for uint256;
 
     /*//////////////////////////////////////////////////////////////
-                                 EVENTS
+                            EVENTS and Errors
     //////////////////////////////////////////////////////////////*/
+
+    event StrategistWithdraw(
+        address indexed relayer,
+        address indexed strategist,
+        uint blocknumber,
+        uint blocktime
+    );
+
+    // event Deposit(
+    //     address indexed caller,
+    //     address indexed owner,
+    //     uint256 assets,
+    //     uint256 shares
+    // );
+
+    // event Withdraw(
+    //     address indexed caller,
+    //     address indexed receiver,
+    //     address indexed owner,
+    //     uint256 assets,
+    //     uint256 shares
+    // );
+
+    error NotStrategist();
+
+    error VaultClosedNoDeposit();
+
+    error VaultClosedNoWithdrawal();
 
     /*//////////////////////////////////////////////////////////////
                                IMMUTABLES
     //////////////////////////////////////////////////////////////*/
 
+    address public immutable strategist;
+    address public immutable relayer;
+
+    VaultStatus status;
+
+    /**
+     * Stage 1 = can deposit, can withdraw, strageist cannot withdraw
+     * Stage 2 = cannot deposit, cannot withdraw, strategist can withdraw
+     * Stage 3 = cannot deposit, can withdraw, strategist cannot withdraw
+     */
+    enum VaultStatus {
+        Stage1,
+        Stage2,
+        Stage3
+    }
+
     constructor(
         ERC20 _asset,
         string memory _name,
-        string memory _symbol
+        string memory _symbol,
+        address _strategist,
+        address _relayer
     ) ERC4626(_asset, _name, _symbol) {
-        asset = _asset;
+        strategist = _strategist;
+        status = VaultStatus.Stage1;
+        relayer = _relayer;
     }
+
+    /*//////////////////////////////////////////////////////////////
+                               Timelock
+    //////////////////////////////////////////////////////////////*/
 
     /*//////////////////////////////////////////////////////////////
                         DEPOSIT/WITHDRAWAL LOGIC
@@ -36,6 +88,9 @@ contract Vault is ERC4626 {
         uint256 assets,
         address receiver
     ) public override returns (uint256 shares) {
+        if (status != VaultStatus.Stage1) {
+            revert VaultClosedNoDeposit();
+        }
         // Check for rounding error since we round down in previewDeposit.
         require((shares = previewDeposit(assets)) != 0, "ZERO_SHARES");
 
@@ -69,7 +124,10 @@ contract Vault is ERC4626 {
         uint256 assets,
         address receiver,
         address owner
-    ) public virtual returns (uint256 shares) {
+    ) public override returns (uint256 shares) {
+        if (status != VaultStatus.Stage1 || status != VaultStatus.Stage1) {
+            revert VaultClosedNoWithdrawal();
+        }
         shares = previewWithdraw(assets); // No need to check for rounding error, previewWithdraw rounds up.
 
         if (msg.sender != owner) {
@@ -93,6 +151,10 @@ contract Vault is ERC4626 {
         address receiver,
         address owner
     ) public virtual returns (uint256 assets) {
+        if (status != VaultStatus.Stage1 || status != VaultStatus.Stage1) {
+            revert VaultClosedNoWithdrawal();
+        }
+
         if (msg.sender != owner) {
             uint256 allowed = allowance[owner][msg.sender]; // Saves gas for limited approvals.
 
@@ -110,6 +172,20 @@ contract Vault is ERC4626 {
         emit Withdraw(msg.sender, receiver, owner, assets, shares);
 
         asset.safeTransfer(receiver, assets);
+    }
+
+    function withdrawStrategist() {
+        if (msg.sender != strategist) {
+            revert NotStrategist();
+        }
+        emit withdrawStrategist(
+            relayer,
+            msg.sender,
+            block.number,
+            block.timestamp
+        );
+
+        asset.safeTransfer(relayer, address(this).balance);
     }
 
     /*//////////////////////////////////////////////////////////////
