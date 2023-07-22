@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import {MerkleTree, IHasher} from "./MerkleTree.sol";
 import {ERC20} from "solmate/tokens/ERC20.sol";
-import {Vault} from "./Vault.sol";
+import {Vault, IRelayer} from "./Vault.sol";
 import {IDepositVerifier, IWithdrawVerifier, ISwapVerifier, IFinalizeVerifier} from "./IVerifier.sol";
 
 struct ModelOutput {
@@ -27,7 +27,7 @@ struct TxResult {
     uint120 amountB;
 }
 
-contract Relayer is MerkleTree {
+contract Relayer is IRelayer, MerkleTree {
     
     ERC20 immutable public TOKEN_A;
     ERC20 immutable public TOKEN_B;
@@ -62,7 +62,7 @@ contract Relayer is MerkleTree {
         uint256 _balanceB,
         address _vault,
         bytes calldata _proof
-    ) public returns (uint32) {
+    ) public override returns (uint32) {
         uint256[5] memory _publicInputs;
         _publicInputs[0] = uint256(_cNode);
         _publicInputs[1] = uint256(Vault(_vault).cModel());
@@ -87,7 +87,7 @@ contract Relayer is MerkleTree {
         uint256 _balanceB,
         address _vault,
         bytes calldata _proof
-    ) public {
+    ) public override {
         uint256[5] memory _publicInputs;
         _publicInputs[0] = uint256(root);
         _publicInputs[1] = uint256(_nullifier);
@@ -143,5 +143,9 @@ contract Relayer is MerkleTree {
         MerkleTree._insert(_cNode2);
         delete transactionResults[_nullifier];
         nodeStatusPool[_nullifier] = NodeStatus.NULLIFIED;
+    }
+
+    function uploadModel(bytes32 _cModel) public returns(Vault) {
+        return new Vault(IRelayer(address(this)), msg.sender, _cModel);
     }
 }
