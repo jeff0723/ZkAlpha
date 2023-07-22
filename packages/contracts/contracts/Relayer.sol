@@ -4,12 +4,7 @@ pragma solidity ^0.8.17;
 import {MerkleTree, IHasher} from "./MerkleTree.sol";
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {Vault} from "./Vault.sol";
-import {
-    IDepositVerifier,
-    IWithdrawVerifier,
-    ISwapVerifier,
-    IFinalizeVerifier
-} from "./IVerifier.sol";
+import {IDepositVerifier, IWithdrawVerifier, ISwapVerifier, IFinalizeVerifier} from "./IVerifier.sol";
 
 struct ModelOutput {
     uint8 direction;
@@ -21,8 +16,7 @@ struct ModelInput {
 }
 
 contract Relayer is MerkleTree {
-    
-    ERC20 immutable public TOKEN;
+    ERC20 public immutable TOKEN;
     IDepositVerifier public depositVerifier;
     IWithdrawVerifier public withdrawVerifier;
     ISwapVerifier public swapVerifier;
@@ -48,17 +42,11 @@ contract Relayer is MerkleTree {
         finalizeVerifier = _finalizeVerifier;
     }
 
-    function deposit() public {
+    function deposit() public {}
 
-    }
+    function withdraw() public {}
 
-    function withdraw() public {
-
-    }
-
-    function finalize() public {
-
-    }
+    function finalize() public {}
 
     function transact(
         bytes calldata _proof,
@@ -69,7 +57,9 @@ contract Relayer is MerkleTree {
         _publicInputs[0] = uint256(root);
         _publicInputs[1] = uint256(_nullifier);
         _publicInputs[2] = modelInput.chainlinkPrice;
-        _publicInputs[3] = uint256(bytes32(abi.encodePacked(modelOutput.direction, modelOutput.amount)));
+        _publicInputs[3] = uint256(
+            bytes32(abi.encodePacked(modelOutput.direction, modelOutput.amount))
+        );
 
         require(
             swapVerifier.verify(_publicInputs, _proof),
