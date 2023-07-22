@@ -85,6 +85,11 @@ const config: HardhatUserConfig = {
     url: process.env.FILECOINTESTNETRPCURL || "",
     accounts: [process.env.GNOSISPK || ""],
     chainId: 314159, 
+  }, 
+  zetachaintestnet: {
+    url: process.env.ZETACHAINRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 7001, 
   }
 },
 etherscan: {
