@@ -53,6 +53,8 @@ contract Vault is ERC4626 {
 
     VaultStatus status;
 
+    OneInchInterface internal immutable oneInchRouter;
+
     /**
      * Stage 1 = can deposit, can withdraw, strageist cannot withdraw
      * Stage 2 = cannot deposit, cannot withdraw, strategist can withdraw
@@ -74,6 +76,7 @@ contract Vault is ERC4626 {
         uint _strategyDuration,
         uint _withdrawalDuration,
         bytes32 _modelHash
+        address, _oneInchAddress;
     ) ERC4626(_asset, _name, _symbol) {
         strategist = _strategist;
         status = VaultStatus.Stage1;
@@ -83,6 +86,7 @@ contract Vault is ERC4626 {
         strategyDuration = _strategyDuration;
         withdrawalDuration = _withdrawalDuration;
         modelHash = _modelHash;
+        oneInchInterface = OneInchInterface(_oneInchAddress); 
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -179,7 +183,7 @@ contract Vault is ERC4626 {
         asset.safeTransfer(receiver, assets);
     }
 
-    function withdrawStrategist() public {
+    function depositToRelayer(bytes32 committment) public {
         if (msg.sender != strategist) {
             revert NotStrategist();
         }
@@ -193,80 +197,21 @@ contract Vault is ERC4626 {
             block.timestamp
         );
 
-        asset.safeTransfer(relayer, address(this).balance);
+        // !!! swap assets into 50/50 pair and WETH
+        // !!! send both assets to relayer
+
+        oneInchInterface.swap()
+
+        // relayer.transfer(address(this).balance);
     }
 
     /*//////////////////////////////////////////////////////////////
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    /// !!! pls review
+    /// !!! need to chance to erc20 support
     function totalAssets() public view override returns (uint256) {
         return address(this).balance;
-    }
-
-    function convertToShares(
-        uint256 assets
-    ) public view override returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? assets : assets.mulDivDown(supply, totalAssets());
-    }
-
-    function convertToAssets(
-        uint256 shares
-    ) public view override returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? shares : shares.mulDivDown(totalAssets(), supply);
-    }
-
-    function previewDeposit(
-        uint256 assets
-    ) public view override returns (uint256) {
-        return convertToShares(assets);
-    }
-
-    function previewMint(
-        uint256 shares
-    ) public view override returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? shares : shares.mulDivUp(totalAssets(), supply);
-    }
-
-    function previewWithdraw(
-        uint256 assets
-    ) public view override returns (uint256) {
-        uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
-
-        return supply == 0 ? assets : assets.mulDivUp(supply, totalAssets());
-    }
-
-    function previewRedeem(
-        uint256 shares
-    ) public view override returns (uint256) {
-        return convertToAssets(shares);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                     DEPOSIT/WITHDRAWAL LIMIT LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-    function maxDeposit(address) public pure override returns (uint256) {
-        return type(uint256).max;
-    }
-
-    function maxMint(address) public pure override returns (uint256) {
-        return type(uint256).max;
-    }
-
-    function maxWithdraw(address owner) public view override returns (uint256) {
-        return convertToAssets(balanceOf[owner]);
-    }
-
-    function maxRedeem(address owner) public view override returns (uint256) {
-        return balanceOf[owner];
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -318,18 +263,4 @@ contract Vault is ERC4626 {
         status = VaultStatus.Stage1;
         currentBlockTime = block.timestamp;
     }
-
-    /*//////////////////////////////////////////////////////////////
-                          INTERNAL HOOKS LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-    // function beforeWithdraw(
-    //     uint256 assets,
-    //     uint256 shares
-    // ) internal virtual override {}
-
-    // function afterDeposit(
-    //     uint256 assets,
-    //     uint256 shares
-    // ) internal virtual override {}
 }

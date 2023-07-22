@@ -3,6 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-foundry";
 import "hardhat-deploy";
 import "hardhat-contract-sizer";
+import "dotenv";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.17",
@@ -22,24 +23,73 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      mining: {
-        auto: !(process.env.HARDHAT_DISABLE_AUTO_MINING === "true"),
-        interval: [100, 3000],
-      },
+      allowUnlimitedContractSize: true,
       accounts: {
         mnemonic: "test test test test test test test test test test test junk",
       },
-      chainId: 1337
+      chainId: 1337,
+    },
+    neontestnet: {
+      url: process.env.NEONTESTNETRPCURL || "",
+      accounts: [process.env.GNOSISPK || ""],
+      chainId: 245022926
+    },
+    mantletestnet: {
+      url: process.env.MANTLETESTNETRPCURL || "",
+      accounts: [process.env.GNOSISPK || ""],
+      chainId: 5001
+    },
+    celotestnet: {
+      url: process.env.CELOTESNETRPCURL || "",
+      accounts: [process.env.GNOSISPK || ""],
+      chainId: 42220,
     },
     gnosis: {
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      url: "https://rpc.gnosischain.com",
+      allowUnlimitedContractSize: true,
+      url: process.env.GNOSISRPCURL || "",
+      accounts: [process.env.GNOSISPK || ""],
+      chainId: 100,
+    },
+    aurora: {
+      allowUnlimitedContractSize: true,
+      url: process.env.AURORARPCURL || "",
+      accounts: [process.env.GNOSISPK || ""],
+      chainId: 1313161554,
+    },
+    auroratestnet: {
+      allowUnlimitedContractSize: true,
+      url: process.env.AURORATESTRPCURL || "",
+      accounts: [process.env.GNOSISPK || ""],
+      chainId: 1313161555,
+    },
+    polygonzkevm: {
+      allowUnlimitedContractSize: true,
+      url: process.env.POLYGONZKEVMRPCURL || "",
+      accounts: [process.env.GNOSISPK || ""],
+      chainId: 1101,
+    },
+    mainnet: {
+      url: process.env.MAINNETRPCURL || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      chainId: 1,
     },
   },
   etherscan: {
     apiKey: {
-      gnosis: process.env.GNOSIS_API_KEY ?? "",
-    }
+      arbitrumOne: process.env.ARBISCAN_API_KEY || "",
+      avalanche: process.env.SNOWTRACE_API_KEY || "",
+      bsc: process.env.BSCSCAN_API_KEY || "",
+      gnosis: process.env.GNOSISSCAN_API_KEY || "",
+      goerli: process.env.ETHERSCAN_API_KEY || "",
+      mainnet: process.env.ETHERSCAN_API_KEY || "",
+      optimisticEthereum: process.env.OPTIMISM_API_KEY || "",
+      polygon: process.env.POLYGONSCAN_API_KEY || "",
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
+      sepolia: process.env.ETHERSCAN_API_KEY || "",
+      aurora: process.env.AURORA_MAINNET_RPC || "",
+      auroratestnet: process.env.AURORA_TESTNET_RPC || "",
+    },
   },
 };
 
