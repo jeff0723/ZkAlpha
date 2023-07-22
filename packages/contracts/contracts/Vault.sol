@@ -211,7 +211,7 @@ contract Vault is ERC4626 {
 
     /// !!! need to chance to erc20 support
     function totalAssets() public view override returns (uint256) {
-        return address(this).balance;
+        return asset.balanceOf(address(this));
     }
 
     /*//////////////////////////////////////////////////////////////
