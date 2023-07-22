@@ -9,6 +9,7 @@ type Props = {
     performance: number
     tvl: number
     active: boolean
+    isTrader:boolean
 }
 const Card = styled.div`
     display: flex;
@@ -31,11 +32,16 @@ const Card = styled.div`
     }
    
 `
-function StrategyCard({ address, name, frequency, assetPair, tvl, performance, active }: Props) {
+function StrategyCard({ address, name, frequency, assetPair, tvl, performance, active,isTrader}: Props) {
     const router = useRouter()
     return (
         <Card onClick={() => {
-            router.push(`/strategies/${address}`)
+            if(isTrader){
+                router.push(`/trader/strategies/${address}`)
+            }else{
+                router.push(`/strategies/${address}`)
+            }
+        
         }}>
             <div className='flex flex-col'>
                 <div className='px-[16px] py-[24px] rounded-t-[8px] flex justify-between bg-gray-700 bg-opacity-50'>
