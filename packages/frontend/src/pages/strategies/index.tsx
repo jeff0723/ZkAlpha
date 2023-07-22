@@ -1,11 +1,13 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import StrategyCard from '@/components/StrategyCard'
 
 type Props = {}
 
-const index = (props: Props) => {
+const StrategyHomePage = (props: Props) => {
+    const [depositAmount, setDepositAmount] = useState(0)
+    const [withDrawAmount, setWithdrawAmount] = useState(0)
     return (
         <div className='flex flex-col items-center justify-center gap-4'>
             <div className='flex gap-3'>
@@ -100,4 +102,4 @@ const index = (props: Props) => {
     )
 }
 
-export default index
+export default StrategyHomePage

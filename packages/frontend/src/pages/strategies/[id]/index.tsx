@@ -12,6 +12,8 @@ enum Action {
 const StartegyPage = (props: Props) => {
     const router = useRouter()
     const [actionState, setActionState] = useState(Action.DEPOSIT)
+    const [depositAmount, setDepositAmount] = useState(0)
+    const [withDrawAmount, setWithdrawAmount] = useState(0)
     const { pathname, query } = router
     return (
         <div className='w-full flex flex-col'>
@@ -93,7 +95,16 @@ const StartegyPage = (props: Props) => {
                             <div className='text-sm text-gray-400'>
                                 Amount
                             </div>
-                            <input value={0} className='p-4 rounded-md outline-0 bg-[#1b1b21] focus:border-none'></input>
+                            <input value={actionState == Action.DEPOSIT ? depositAmount : withDrawAmount} className='p-4 rounded-md outline-0 bg-[#1b1b21] focus:border-none'
+                                onChange={(e) => {
+                                    if (actionState == Action.DEPOSIT) {
+                                        setDepositAmount(Number(e.target.value))
+                                    }
+                                    if (actionState == Action.WITHDRAW) {
+                                        setWithdrawAmount(Number(e.target.value))
+                                    }
+
+                                }}></input>
                             <div className='flex justify-between'>
                                 <div className='text-sm text-gray-400'>
                                     Wallet Balance
