@@ -16,8 +16,8 @@ const StartegyPage = (props: Props) => {
     return (
         <div className='w-full flex flex-col'>
             <div className='w-full h-[8px] bg-gradient-to-r from-white ' />
-            <div className='flex justify-center items-center  py-[40px] px-[60px] w-1/2'>
-                <div className='flex flex-col gap-4 w-full'>
+            <div className='flex justify-between items-center  py-[40px] px-[60px]'>
+                <div className='flex flex-col gap-4 w-1/2'>
 
                     <div className='text-[56px]'>MA-200</div>
                     <div className='flex'>
@@ -41,6 +41,9 @@ const StartegyPage = (props: Props) => {
                         <div>100K ETH</div>
                     </div>
 
+                </div>
+                <div className='flex justify-center item-centers w-1/2'>
+                    <img src='/weth.png' />
                 </div>
             </div>
             <div className='w-full h-[8px] bg-gradient-to-l from-white ' />

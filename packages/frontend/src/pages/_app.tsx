@@ -29,7 +29,7 @@ const { chains, publicClient } = configureChains(
   ]
 );
 
-const projectId = 'YOUR_PROJECT_ID';
+const projectId = 'd70627db8863f52dd98dafa4550cf646';
 
 const { wallets } = getDefaultWallets({
   appName: 'ZKAlpha',
