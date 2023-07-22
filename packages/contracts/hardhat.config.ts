@@ -43,31 +43,32 @@ const config: HardhatUserConfig = {
   celotestnet: {
     url: process.env.CELOTESNETRPCURL || "",
     accounts: [process.env.GNOSISPK || ""],
-    chainId: 42220,
+    chainId: 44787,
   },
   gnosis: {
-    allowUnlimitedContractSize: true,
     url: process.env.GNOSISRPCURL || "",
     accounts: [process.env.GNOSISPK || ""],
     chainId: 100,
   },
   aurora: {
-    allowUnlimitedContractSize: true,
     url: process.env.AURORARPCURL || "",
     accounts: [process.env.GNOSISPK || ""],
     chainId: 1313161554,
   },
   auroratestnet: {
-    allowUnlimitedContractSize: true,
     url: process.env.AURORATESTRPCURL || "",
     accounts: [process.env.GNOSISPK || ""],
     chainId: 1313161555,
   },
   polygonzkevm: {
-    allowUnlimitedContractSize: true,
     url: process.env.POLYGONZKEVMRPCURL || "",
     accounts: [process.env.GNOSISPK || ""],
     chainId: 1101,
+  },
+  polygonzkevmtestnet: {
+    url: process.env.POLYGONZKEVMTESTNETRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 1442,
   },
   mainnet: {
     url: process.env.MAINNETRPCURL || "",
@@ -75,6 +76,16 @@ const config: HardhatUserConfig = {
       process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     chainId: 1,
   },
+  linea: {
+    url: process.env.LINEARPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 59140, 
+  }, 
+  filecoinCalibration: {
+    url: process.env.FILECOINTESTNETRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 314159, 
+  }
 },
 etherscan: {
   apiKey: {
