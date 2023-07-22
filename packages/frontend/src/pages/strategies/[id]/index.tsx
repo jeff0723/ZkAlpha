@@ -1,12 +1,17 @@
 import { useRouter } from 'next/router'
 import path from 'path'
-import React from 'react'
+import React, { useState } from 'react'
 import { styled } from 'styled-components'
+import clsx from 'clsx';
 
 type Props = {}
-
+enum Action {
+    DEPOSIT,
+    WITHDRAW
+}
 const StartegyPage = (props: Props) => {
     const router = useRouter()
+    const [actionState, setActionState] = useState(Action.DEPOSIT)
     const { pathname, query } = router
     return (
         <div className='w-full flex flex-col'>
@@ -40,7 +45,7 @@ const StartegyPage = (props: Props) => {
             </div>
             <div className='w-full h-[8px] bg-gradient-to-l from-white ' />
             <div className='flex w-full py-[40px] px-[60px]'>
-                <div className='flex w-1/2 '>
+                <div className='flex w-1/2 flex-col'>
                     <div className='flex flex-col gap-[16px] text-[18px]'>
                         <div>
                             Vault strategy
@@ -51,14 +56,33 @@ const StartegyPage = (props: Props) => {
                         </div>
 
                     </div>
+                    <div className='flex flex-col'>
+                        <div> Vault Performance</div>
+                        <div className='bg-[#121219] rounded-lg w-full'>
+                            a
+                        </div>
+
+                    </div>
                 </div>
                 <div className='flex w-1/2 justify-center'>
                     <div className='flex flex-col w-[400px] bg-[#121219] rounded-lg'>
                         <div className='flex rounded-t-lg'>
-                            <div className='flex w-1/2 justify-center cursor-pointer py-[24px]'>
+                            <div
+                                onClick={() => setActionState(Action.DEPOSIT)}
+                                className={
+                                    clsx('flex w-1/2 justify-center cursor-pointer py-[24px]',
+                                        actionState === Action.DEPOSIT ? 'bg-[#121219]' : 'bg-[#1b1b21]'
+                                    )
+                                }>
                                 Deposit
                             </div>
-                            <div className='flex w-1/2 justify-center cursor-pointer py-[24px]'>
+                            <div
+                                onClick={() => setActionState(Action.WITHDRAW)}
+                                className={
+                                    clsx('flex w-1/2 justify-center cursor-pointer py-[24px]',
+                                        actionState === Action.WITHDRAW ? 'bg-[#121219]' : 'bg-[#1b1b21]'
+                                    )
+                                }>
                                 Withdraw
                             </div>
                         </div>
@@ -75,7 +99,9 @@ const StartegyPage = (props: Props) => {
                                     0 ETH
                                 </div>
                             </div>
-                            <button className='p-4 rounded-md bg-gray-400'> Deposit</button>
+                            <button className='p-4 rounded-md font-bold bg-white text-black hover:border-white hover:border-2 hover:bg-black hover:text-white'> {
+                                actionState === Action.DEPOSIT ? 'Deposit' : 'Withdraw'
+                            }</button>
                         </div>
                     </div>
                 </div>
