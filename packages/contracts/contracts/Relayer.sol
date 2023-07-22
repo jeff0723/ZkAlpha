@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {MerkleTreeWithHistory, IHasher} from "./MerkleTreeWithHistory.sol";
+import {MerkleTree, IHasher} from "./MerkleTree.sol";
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {Vault} from "./Vault.sol";
 import {
@@ -20,7 +20,7 @@ struct ModelInput {
     uint256 chainlinkPrice;
 }
 
-contract Relayer is MerkleTreeWithHistory {
+contract Relayer is MerkleTree {
     
     ERC20 immutable public TOKEN;
     IDepositVerifier public depositVerifier;
@@ -41,7 +41,7 @@ contract Relayer is MerkleTreeWithHistory {
         IFinalizeVerifier _finalizeVerifier,
         IHasher _hasher,
         uint32 _merkleTreeHeight
-    ) MerkleTreeWithHistory(_merkleTreeHeight, _hasher) {
+    ) MerkleTree(_merkleTreeHeight, _hasher) {
         TOKEN = _token;
         depositVerifier = _depositVerifier;
         withdrawVerifier = _withdrawVerifier;
