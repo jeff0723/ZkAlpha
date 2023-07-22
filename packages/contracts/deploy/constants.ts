@@ -25,11 +25,13 @@ export const CONSTANTS = {
     },
     polygonzkevm: {
         rpcURL: "https://zkevm-rpc.com",
-        usdcContractAddress: "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035"
+        usdcContractAddress: "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035",
+        wethContractAddress: "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9"
     },
     polygonzkevmtestnet: {
         rpcURL: "https://rpc.public.zkevm-test.net/",
-        usdcContractAddress: "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035"
+        usdcContractAddress: "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035",
+        wethContractAddress: "0xb008B98C2a3EB376c9B0Dcf4e626fFd7DE1c5D67"
     },
     linea: {
         rpcURL: "https://rpc.goerli.linea.build/",
