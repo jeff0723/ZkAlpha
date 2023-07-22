@@ -1,0 +1,1 @@
+export const oneInchNetworkEndpoint = 'https://api.1inch.dev'
