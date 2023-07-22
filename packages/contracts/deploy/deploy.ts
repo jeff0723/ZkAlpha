@@ -43,11 +43,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 		address: Vault.address,
 		constructorArguments: vaultargs,
 	});
-	// console.log('Verifying HashVerifier.... ')
-	// await run(`verify:verify`, {
-	// 	address: Relayer.address,
-	// 	constructorArguments: relayerargs,
-	// });
 
 };
 export default func;
