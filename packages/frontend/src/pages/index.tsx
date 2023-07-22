@@ -24,7 +24,11 @@ export default function Home() {
           <button onClick={() => {
             router.push('/strategies')
           }} className='p-4 bg-white text-black rounded-lg font-bold hover:bg-opacity-30'>{"I'm an investor"}</button>
-          <button className='p-4 border-2 bg-black border-white font-bold rounded-lg hover:bg-opacity-30 hover:bg-white'>{"I'm a trader"}</button>
+          <button 
+           onClick={() => {
+            router.push('/trader')
+          }}
+          className='p-4 border-2 bg-black border-white font-bold rounded-lg hover:bg-opacity-30 hover:bg-white'>{"I'm a trader"}</button>
         </div>
       </div>
     </main>

@@ -56,13 +56,13 @@ const StartegyPage = (props: Props) => {
                         </div>
 
                     </div>
-                    <div className='flex flex-col'>
+                    {/* <div className='flex flex-col'>
                         <div> Vault Performance</div>
                         <div className='bg-[#121219] rounded-lg w-full'>
                             a
                         </div>
 
-                    </div>
+                    </div> */}
                 </div>
                 <div className='flex w-1/2 justify-center'>
                     <div className='flex flex-col w-[400px] bg-[#121219] rounded-lg'>
