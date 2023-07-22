@@ -323,13 +323,13 @@ contract Vault is ERC4626 {
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function beforeWithdraw(
-        uint256 assets,
-        uint256 shares
-    ) internal virtual override {}
+    // function beforeWithdraw(
+    //     uint256 assets,
+    //     uint256 shares
+    // ) internal virtual override {}
 
-    function afterDeposit(
-        uint256 assets,
-        uint256 shares
-    ) internal virtual override {}
+    // function afterDeposit(
+    //     uint256 assets,
+    //     uint256 shares
+    // ) internal virtual override {}
 }
