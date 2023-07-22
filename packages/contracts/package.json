@@ -4,9 +4,37 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "hardhat": "^2.17.0"
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.1",
+    "@nomicfoundation/hardhat-ethers": "^3.0.4",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomicfoundation/hardhat-verify": "^1.0.4",
+    "@openzeppelin/contracts": "^4.9.2",
+    "@typechain/ethers-v6": "^0.4.2",
+    "@typechain/hardhat": "^8.0.2",
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "hardhat": "^2.17.0",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-deploy": "^0.11.34",
+    "hardhat-gas-reporter": "^1.0.9",
+    "solidity-coverage": "^0.8.4",
+    "ts-node": "^10.9.1",
+    "typechain": "^8.3.0",
+    "typescript": "^5.1.6"
   },
-  "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^3.0.0"
+  "scripts": {
+    "accounts": "hardhat accounts",
+    "compile": "hardhat compile",
+    "deploy": "hardhat deploy",
+    "test": "hardhat test",
+    "runs": "hardhat run",
+    "clean": "hardhat clean",
+    "typechain": "hardhat typechain",
+    "verify": "hardhat etherscan-verify",
+    "coverage": "hardhat coverage",
+    "localhost": "hardhat node",
+    "console": "hardhat console"
   }
 }
