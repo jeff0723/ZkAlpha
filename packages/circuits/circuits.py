@@ -35,41 +35,110 @@ M = 1e9+7
 
 class Hasher(): 
     def hash2(self, x1, x2) -> Field:
-        return x1 + x2 % M
+        return x1//17*7 + x2//37*17
+    
+    def hash(self, x) -> Field:
+        return self.hash2(x, 0)
+
     def hash_list(self, xs: List[Field]) -> Field:
         ans = 0
         for x in xs:
              ans = self.hash2(ans, x)
         return ans
 
-class MerkleProofModel(nn.Module):
+
+class OpenNodeCircuit(nn.Module): 
+    """
+    this proofs: H(k, s, b1, b2, cModel, address) == cNode
+    public input depends on use cases
+    """
     def __init__(self):
-        super(MerkleProofModel, self).__init__()
+        super(OpenNodeCircuit, self).__init__()
+        self.hasher = Hasher()
+    
+    def forward(self, x):
+        return self.hasher.hash_list(x[:-1]) - x[-1] 
+
+class MerkleProofCircuit(nn.Module):
+    """
+    gadget for proving merkle tree inclusion
+    path[-1] is root, public
+    """
+    def __init__(self):
+        super(MerkleProofCircuit, self).__init__()
         self.hasher = Hasher()
 
-    def verify_merkle_proof(self, leaf: Field, index: Field, merkle_path: List[Field]):
+    def verify_merkle_proof(self, leaf: Field, index: Field, path: List[Field]):
         current_hash = leaf
-        for sibling in merkle_path:
+        for sibling in path[:-1]:
             if index % 2 == 0:
                 current_hash = self.hasher.hash2(current_hash, sibling)
             else:
                 current_hash = self.hasher.hash2(sibling, current_hash)
             index = index // 2
-        return current_hash - merkle_path[-1]
+        return current_hash - path[-1]
 
     def forward(self, x):
         leaf, index, *path = x # assume len(path) == height of the tree
         return self.verify_merkle_proof(leaf, index, path)
 
-class DepositProofModel(nn.Module):
+class DepositCircuit(nn.Module):
     def __init__(self):
-        super(DepositProofModel, self).__init__()
+        super(DepositCircuit, self).__init__()
         self.hasher = Hasher()
+        self.openNode = OpenNodeCircuit()
 
     def forward(self, x):
-        k, s, b1, b2, cModel, cNode = x
-        return self.hasher.hash_list([k, s, b1, b2, cModel]) - cNode 
+        # pupblic: b1, b2, cModel, address
+        return self.openNode(x)
 
+class WithdrawCircuit(nn.Module):
+    def __init__(self):
+        super(WithdrawCircuit, self).__init__()
+        self.hasher = Hasher()
+        self.merkle = MerkleProofCircuit()
+
+    def forward(self, x):
+        k, s, b1, b2, cModel, addr, cNode, index, nullifier, *path = x
+        y0 = self.merkle.verify_merkle_proof(cNode, index, path)
+        y1 = self.hasher.hash(k) - nullifier
+        # assume the output is 0
+        # b1, b2, path[-1] is public, when ezkl support partial public input
+        return [y0, y1] 
+
+class FinalizeCircuit(nn.Module):
+    def __init__(self):
+        super(FinalizeCircuit, self).__init__()
+        self.hasher = Hasher()
+        self.merkle = MerkleProofCircuit()
+
+    def forward(self, x):
+        k, s, b1, b2, cModel, addr, cNode, index, nullifier, *y = x
+        k2, s2, b12, b22, cNode2, delta1, delta2, *path = y
+        y0 = self.merkle.verify_merkle_proof(cNode, index, path)
+        y1 = self.hasher.hash(k) - nullifier
+        y2 = b1-b12 - delta1
+        y3 = b2-b22 - delta2
+        # assume the output 0
+        # public: delta1, delta2, nullifier (delta from nullifier)
+        return [y0, y1, y2, y3]
+
+class TransactCircuit(nn.Module):
+    def __init__(self):
+        super(FinalizeCircuit, self).__init__()
+        self.hasher = Hasher()
+        self.merkle = MerkleProofCircuit()
+
+    def forward(self, x):
+        k, s, b1, b2, cModel, addr, cNode, index, nullifier, *y = x
+        k2, s2, b12, b22, cNode2, delta1, delta2, *path = y
+        y0 = self.merkle.verify_merkle_proof(cNode, index, path)
+        y1 = self.hasher.hash(k) - nullifier
+        y2 = b1-b12 - delta1
+        y3 = b2-b22 - delta2
+        # assume the output 0
+        # public: delta1, delta2, nullifier (delta from nullifier)
+        return [y0, y1, y2, y3]
 
 
 def export_circuit(Model, x):
@@ -174,7 +243,6 @@ def call_evm_verifier(addr):
     )
     assert res == True
 
-
 def main():
     # TOMO
     x = torch.asarray([1, 1, 1, 1, 1, 5])
@@ -183,7 +251,7 @@ def main():
         "input_data": [(0.1*torch.rand(40, *[3, 8, 8])).flatten().tolist()],
     }
 
-    export_circuit(Model=DepositProofModel, x=x)
+    export_circuit(Model=DepositCircuit, x=x)
     generate_settings(visibility_settings=visibility_settings)
     test_proof_and_verification(cal_data=cal_data)
     generate_keys()
