@@ -93,7 +93,7 @@ const index = (props: Props) => {
                 </Menu>
             </div>
             <div className='pt-[40px]'>
-                <StrategyCard name='MA-200' assetPair='ETH/USDC' frequency='Monthly' active={true} performance={0.23} tvl={500000} />
+                <StrategyCard address='0x1234' name='MA-200' assetPair='ETH/USDC' frequency='Monthly' active={true} performance={0.23} tvl={500000} />
             </div>
         </div>
     )

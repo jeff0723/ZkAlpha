@@ -1,6 +1,8 @@
+import { useRouter } from 'next/router'
 import React from 'react'
 import styled from 'styled-components'
 type Props = {
+    address: string
     name: string
     frequency: string
     assetPair: string
@@ -29,9 +31,12 @@ const Card = styled.div`
     }
    
 `
-function StrategyCard({ name, frequency, assetPair, tvl, performance, active }: Props) {
+function StrategyCard({ address, name, frequency, assetPair, tvl, performance, active }: Props) {
+    const router = useRouter()
     return (
-        <Card>
+        <Card onClick={() => {
+            router.push(`/strategies/${address}`)
+        }}>
             <div className='flex flex-col'>
                 <div className='px-[16px] py-[24px] rounded-t-[8px] flex justify-between bg-gray-700 bg-opacity-50'>
                     <div className='font-bold'> {name} </div>
