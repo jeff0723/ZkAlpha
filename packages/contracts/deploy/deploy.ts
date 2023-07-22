@@ -16,30 +16,18 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 	const provider = ethers.getDefaultProvider()
 	console.log(provider)
 
-	const usdcContractAddress = "usdc_contract_address";
-	const usdcContract = new ethers.Contract(usdcContractAddress, erc20abi, provider);
-
-	const wethContractAddress = "weth_contract_address";
-	const wethContract = new ethers.Contract(wethContractAddress, erc20abi, provider);
-
-
 	/**
-	 *  ERC20 _asset,
-		string memory _name,
-		string memory _symbol,
-		address _strategist,
-		address _relayer,
-		uint _openDuration,
-		uint _strategyDuration,
-		uint _withdrawalDuration,
-		bytes32 _modelHash,
-		address _oneInchAddress;
+	 *  ERC20 _tokenA,
+        ERC20 _tokenB,
+        IDepositVerifier _depositVerifier,
+        IWithdrawVerifier _withdrawVerifier,
+        ISwapVerifier _swapVerifier,
+        IFinalizeVerifier _finalizeVerifier,
+        IHasher _hasher
 	 */
 
 
-	const vaultargs = [wethContract, "vault", "VAL",
-		"0xfa04032c159aE60d53d34d3811406Fb53E5A3215", "0xfa04032c159aE60d53d34d3811406Fb53E5A3215",
-		3600, 3600, 3600, "0xfa04032c159aE60d53d34d3811406Fb53E5A3215", "0x1111111254EEB25477B68fb85Ed929f73A960582"]
+	const vaultargs = []
 
 	const Vault = await deploy('Vault', {
 		from: deployer,
@@ -50,15 +38,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 	console.log(Vault.address)
 
-	// const relayerargs = []
-
-	// const Relayer = await deploy('Relayer', {
-	// 	from: deployer,
-	// 	args: ,
-	// 	log: true,
-	// 	autoMine: true,
-	// })
-	// // console.log('Verifying HashVerifier.... ')
+   console.log('Verifying Relayer.... ')
 	await run(`verify:verify`, {
 		address: Vault.address,
 		constructorArguments: vaultargs,
