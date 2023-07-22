@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router'
-import path from 'path'
-import React, { useState } from 'react'
-import { styled } from 'styled-components'
+import { getOneInchData } from '@/utils/actions/1inch';
 import clsx from 'clsx';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useAccount } from "wagmi";
 
 type Props = {}
 enum Action {
@@ -12,6 +12,7 @@ enum Action {
 }
 const StartegyPage = (props: Props) => {
     const router = useRouter()
+    const { address } = useAccount()
     const [actionState, setActionState] = useState(Action.DEPOSIT)
     const [depositAmount, setDepositAmount] = useState(0)
     const [withDrawAmount, setWithdrawAmount] = useState(0)
@@ -115,8 +116,20 @@ const StartegyPage = (props: Props) => {
                                 </div>
                             </div>
                             <button
-                                onClick={() => {
+                                onClick={async () => {
                                     toast.success('Successfully deposited')
+                                    const response = await fetch('/api/get-data', {
+                                        method: 'POST',
+                                        body: JSON.stringify({
+                                            address,
+                                            amount: 10
+                                        }),
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        }
+                                    })
+                                    const data = await response.json()
+                                    console.log(data)
                                 }}
                                 className='p-4 rounded-md font-bold bg-white text-black hover:border-white hover:border-2 hover:bg-black hover:text-white'> {
                                     actionState === Action.DEPOSIT ? 'Deposit' : 'Withdraw'
