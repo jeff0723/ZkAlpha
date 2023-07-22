@@ -3,6 +3,7 @@ import path from 'path'
 import React, { useState } from 'react'
 import { styled } from 'styled-components'
 import clsx from 'clsx';
+import toast from 'react-hot-toast';
 
 type Props = {}
 enum Action {
@@ -113,9 +114,13 @@ const StartegyPage = (props: Props) => {
                                     0 ETH
                                 </div>
                             </div>
-                            <button className='p-4 rounded-md font-bold bg-white text-black hover:border-white hover:border-2 hover:bg-black hover:text-white'> {
-                                actionState === Action.DEPOSIT ? 'Deposit' : 'Withdraw'
-                            }</button>
+                            <button
+                                onClick={() => {
+                                    toast.success('Successfully deposited')
+                                }}
+                                className='p-4 rounded-md font-bold bg-white text-black hover:border-white hover:border-2 hover:bg-black hover:text-white'> {
+                                    actionState === Action.DEPOSIT ? 'Deposit' : 'Withdraw'
+                                }</button>
                         </div>
                     </div>
                 </div>

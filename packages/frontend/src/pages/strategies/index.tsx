@@ -6,8 +6,7 @@ import StrategyCard from '@/components/StrategyCard'
 type Props = {}
 
 const StrategyHomePage = (props: Props) => {
-    const [depositAmount, setDepositAmount] = useState(0)
-    const [withDrawAmount, setWithdrawAmount] = useState(0)
+
     return (
         <div className='flex flex-col items-center justify-center gap-4'>
             <div className='flex gap-3'>
