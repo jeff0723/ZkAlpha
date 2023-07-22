@@ -30,12 +30,6 @@ const config: HardhatUserConfig = {
       },
       chainId: 1337,
     },
-    gnosis: {
-      allowUnlimitedContractSize: true,
-      url: "https://rpc.gnosischain.com",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 100,
-    },
   neontestnet: {
     url: process.env.NEONTESTNETRPCURL || "",
     accounts: [process.env.GNOSISPK || ""],
