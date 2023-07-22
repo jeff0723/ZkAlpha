@@ -7,7 +7,7 @@ type Props = {}
 
 const index = (props: Props) => {
     return (
-        <div className='flex justify-center'>
+        <div className='flex flex-col items-center justify-center gap-4'>
             <div className='flex gap-3'>
                 <Menu as="div" className="relative inline-block text-left">
                     <Menu.Button className="inline-flex w-full justify-center rounded-md bg-gray-700 bg-opacity-40 px-4 py-3 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -92,8 +92,8 @@ const index = (props: Props) => {
                     </Transition>
                 </Menu>
             </div>
-            <div>
-                <StrategyCard />
+            <div className='pt-[40px]'>
+                <StrategyCard name='MA-200' assetPair='ETH/USDC' frequency='Monthly' active={true} performance={0.23} tvl={500000} />
             </div>
         </div>
     )

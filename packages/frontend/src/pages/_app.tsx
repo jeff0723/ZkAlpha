@@ -19,6 +19,9 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, aurora, gnosis } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '@/components/Layout';
+
+
+
 const { chains, publicClient } = configureChains(
   [gnosis, aurora, mainnet, polygon, optimism, arbitrum],
   [
@@ -61,9 +64,11 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <WagmiConfig config={wagmiConfig}>
         <RainbowKitProvider theme={midnightTheme()} chains={chains} appInfo={demoAppInfo}>
+
           <Layout>
             <Component {...pageProps} />
           </Layout>
+
         </RainbowKitProvider>
       </WagmiConfig>
     </Provider>)
