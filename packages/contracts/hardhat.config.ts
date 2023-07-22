@@ -36,23 +36,68 @@ const config: HardhatUserConfig = {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 100,
     },
+  neontestnet: {
+    url: process.env.NEONTESTNETRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 245022926
   },
-  etherscan: {
-    apiKey: {
-      arbitrumOne: process.env.ARBISCAN_API_KEY || "",
-      avalanche: process.env.SNOWTRACE_API_KEY || "",
-      bsc: process.env.BSCSCAN_API_KEY || "",
-      gnosis: process.env.GNOSISSCAN_API_KEY || "",
-      goerli: process.env.ETHERSCAN_API_KEY || "",
-      mainnet: process.env.ETHERSCAN_API_KEY || "",
-      optimisticEthereum: process.env.OPTIMISM_API_KEY || "",
-      polygon: process.env.POLYGONSCAN_API_KEY || "",
-      polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
-      sepolia: process.env.ETHERSCAN_API_KEY || "",
-      aurora: process.env.AURORA_MAINNET_RPC || "",
-      auroratestnet: process.env.AURORA_TESTNET_RPC || "",
-    },
+  mantletestnet: {
+    url: process.env.MANTLETESTNETRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 5001
   },
-};
+  celotestnet: {
+    url: process.env.CELOTESNETRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 42220,
+  },
+  gnosis: {
+    allowUnlimitedContractSize: true,
+    url: process.env.GNOSISRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 100,
+  },
+  aurora: {
+    allowUnlimitedContractSize: true,
+    url: process.env.AURORARPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 1313161554,
+  },
+  auroratestnet: {
+    allowUnlimitedContractSize: true,
+    url: process.env.AURORATESTRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 1313161555,
+  },
+  polygonzkevm: {
+    allowUnlimitedContractSize: true,
+    url: process.env.POLYGONZKEVMRPCURL || "",
+    accounts: [process.env.GNOSISPK || ""],
+    chainId: 1101,
+  },
+  mainnet: {
+    url: process.env.MAINNETRPCURL || "",
+    accounts:
+      process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    chainId: 1,
+  },
+},
+etherscan: {
+  apiKey: {
+    arbitrumOne: process.env.ARBISCAN_API_KEY || "",
+    avalanche: process.env.SNOWTRACE_API_KEY || "",
+    bsc: process.env.BSCSCAN_API_KEY || "",
+    gnosis: process.env.GNOSISSCAN_API_KEY || "",
+    goerli: process.env.ETHERSCAN_API_KEY || "",
+    mainnet: process.env.ETHERSCAN_API_KEY || "",
+    optimisticEthereum: process.env.OPTIMISM_API_KEY || "",
+    polygon: process.env.POLYGONSCAN_API_KEY || "",
+    polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
+    sepolia: process.env.ETHERSCAN_API_KEY || "",
+    aurora: process.env.AURORA_MAINNET_RPC || "",
+    auroratestnet: process.env.AURORA_TESTNET_RPC || "",
+  },  
+}
+}
 
 export default config;
