@@ -49,6 +49,8 @@ contract Vault is ERC4626 {
 
     uint public currentBlockTime;
 
+    bytes32 public modelHash;
+
     VaultStatus status;
 
     /**
@@ -70,7 +72,8 @@ contract Vault is ERC4626 {
         address _relayer,
         uint _openDuration,
         uint _strategyDuration,
-        uint _withdrawalDuration
+        uint _withdrawalDuration,
+        bytes32 _modelHash
     ) ERC4626(_asset, _name, _symbol) {
         strategist = _strategist;
         status = VaultStatus.Stage1;
@@ -79,6 +82,7 @@ contract Vault is ERC4626 {
         openDuration = _openDuration;
         strategyDuration = _strategyDuration;
         withdrawalDuration = _withdrawalDuration;
+        modelHash = _modelHash;
     }
 
     /*//////////////////////////////////////////////////////////////
