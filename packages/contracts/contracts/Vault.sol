@@ -6,9 +6,9 @@ import {Owned} from "solmate/auth/Owned.sol";
 interface IRelayer {
     function deposit(
         bytes32 _cNode,
-        bytes32 _cModel,
         uint256 _balanceA,
         uint256 _balanceB,
+        address _vault,
         bytes calldata _proof
     ) external returns (uint32);
 
@@ -68,7 +68,7 @@ contract Vault is Owned {
         // TODO swap A to B and make 50 50
         uint256 balanceA = relayer.TOKEN_A().balanceOf(address(this));
         uint256 balanceB = relayer.TOKEN_B().balanceOf(address(this));
-        relayer.deposit(_cNode, cModel, balanceA, balanceB, _proof);
+        relayer.deposit(_cNode, balanceA, balanceB, address(this), _proof);
         state = VaultState.WAITING;
     }
 

@@ -17,32 +17,31 @@ export const CONSTANTS = {
     // does not have WETH
     celotestnet: {
         rpcURL: "https://alfajores-forno.celo-testnet.org",
-        usdcContractAddress: "0x922f76238FbeaE0a47aa8935532725bA588C8a16",
-    }, 
-    gnosis:{
+        usdcContractAddress: "0x922f76238FbeaE0a47aa8935532725bA588C8a16"
+    },
+    gnosis: {
         rpcURL: "https://rpc.ankr.com/gnosis",
         usdcContractAddress: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
         wethContractAddress: "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
     },
     auroratestnet: {
         rpcURL: "https://testnet.aurora.dev",
-        usdcContractAddress: "0xb12bfca5a55806aaf64e99521918a4bf0fc40802",
-        wethContractAddress:
-    }, 
+        usdcContractAddress: "0xb12bfca5a55806aaf64e99521918a4bf0fc40802"
+    },
     polygonzkevm: {
         rpcURL: "https://zkevm-rpc.com",
         usdcContractAddress: "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035",
-        wethContractAddress:
+        wethContractAddress: "0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9"
     },
     polygonzkevmtestnet: {
         rpcURL: "https://rpc.public.zkevm-test.net/",
         usdcContractAddress: "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035",
-        wethContractAddress:
-    }, 
+        wethContractAddress: "0xb008B98C2a3EB376c9B0Dcf4e626fFd7DE1c5D67"
+    },
     linea: {
         rpcURL: "https://rpc.goerli.linea.build/",
         usdcContractAddress: "0x6d8727B664D3f877de683F836E75EB2de47FD197",
-        wethContractAddress:
+        wethContractAddress: "0x2C1b868d6596a18e32E61B901E4060C872647b6C"
     }
 }
 

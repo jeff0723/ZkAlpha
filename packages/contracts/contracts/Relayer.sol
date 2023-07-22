@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import {MerkleTree, IHasher} from "./MerkleTree.sol";
 import {ERC20} from "solmate/tokens/ERC20.sol";
-import {Vault} from "./Vault.sol";
+import {Vault, IRelayer} from "./Vault.sol";
 import {IDepositVerifier, IWithdrawVerifier, ISwapVerifier, IFinalizeVerifier} from "./IVerifier.sol";
 
 struct ModelOutput {
@@ -27,7 +27,7 @@ struct TxResult {
     uint120 amountB;
 }
 
-contract Relayer is MerkleTree {
+contract Relayer is IRelayer, MerkleTree {
     
     ERC20 immutable public TOKEN_A;
     ERC20 immutable public TOKEN_B;
@@ -62,20 +62,17 @@ contract Relayer is MerkleTree {
         uint256 _balanceB,
         address _vault,
         bytes calldata _proof
-    ) public returns (uint32) {
+    ) public override returns (uint32) {
         uint256[5] memory _publicInputs;
         _publicInputs[0] = uint256(_cNode);
         _publicInputs[1] = uint256(Vault(_vault).cModel());
         _publicInputs[2] = uint256(_balanceA);
         _publicInputs[3] = uint256(_balanceB);
         _publicInputs[4] = uint256(uint160(_vault));
-        require(
-            msg.sender == _vault,
-            "Deposit not trader"
-        );
+        require(msg.sender == _vault, "not trader");
         require(
             depositVerifier.verify(_publicInputs, _proof),
-            "Deposit Verifier failed"
+            "deposit: verify failed"
         );
 
         TOKEN_A.transferFrom(_vault, address(this), _balanceA);
@@ -90,20 +87,17 @@ contract Relayer is MerkleTree {
         uint256 _balanceB,
         address _vault,
         bytes calldata _proof
-    ) public {
+    ) public override {
         uint256[5] memory _publicInputs;
         _publicInputs[0] = uint256(root);
         _publicInputs[1] = uint256(_nullifier);
         _publicInputs[2] = uint256(_balanceA);
         _publicInputs[3] = uint256(_balanceB);
         _publicInputs[4] = uint256(uint160(_vault));
-        require(
-            msg.sender == _vault,
-            "Withdraw not trader"
-        );
+        require(msg.sender == _vault, "not trader");
         require(
             withdrawVerifier.verify(_publicInputs, _proof),
-            "Withdraw Verifier failed"
+            "withdraw: verify failed"
         );
 
         TOKEN_A.transferFrom(address(this), _vault, _balanceA);
@@ -124,10 +118,11 @@ contract Relayer is MerkleTree {
         _publicInputs[3] = uint256(bytes32(abi.encodePacked(modelOutput.direction, modelOutput.amount)));
         require(
             swapVerifier.verify(_publicInputs, _proof),
-            "Swap Verifier failed"
+            "transact: verify failed"
         );
 
-        transactionResults[_nullifier] = _transact(modelOutput);
+        // TODO transactionResults[_nullifier] = _transact(modelOutput);
+        transactionResults[_nullifier] = TxResult(0, 0, 0);
         nodeStatusPool[_nullifier] = NodeStatus.TRANSACTED;
     }
 
@@ -150,8 +145,7 @@ contract Relayer is MerkleTree {
         nodeStatusPool[_nullifier] = NodeStatus.NULLIFIED;
     }
 
-    function _transact(ModelOutput calldata _modelOutput) private pure returns (TxResult memory) {
-        // TODO swap with 1inch aggregator
-        return TxResult(0, 0, 0);
+    function uploadModel(bytes32 _cModel) public returns(Vault) {
+        return new Vault(IRelayer(address(this)), msg.sender, _cModel);
     }
 }
