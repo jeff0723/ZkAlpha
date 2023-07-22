@@ -5,6 +5,7 @@ import {ERC20} from "solmate/tokens/ERC20.sol";
 import {ERC4626} from "solmate/mixins/ERC4626.sol";
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
 import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
+import {IGenericRouter} from "./interfaces/I1nchRouter.sol";
 
 /// @notice Minimal ERC4626 tokenized Vault implementation.
 /// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/mixins/ERC4626.sol)
@@ -51,9 +52,9 @@ contract Vault is ERC4626 {
 
     bytes32 public modelHash;
 
-    VaultStatus status;
+    VaultStatus public status;
 
-    OneInchInterface internal immutable oneInchRouter;
+    IGenericRouter public immutable oneInchRouter;
 
     /**
      * Stage 1 = can deposit, can withdraw, strageist cannot withdraw
@@ -76,7 +77,7 @@ contract Vault is ERC4626 {
         uint _strategyDuration,
         uint _withdrawalDuration,
         bytes32 _modelHash,
-        address, _oneInchAddress
+        address _oneInchAddress
     ) ERC4626(_asset, _name, _symbol) {
         strategist = _strategist;
         status = VaultStatus.Stage1;
@@ -86,7 +87,7 @@ contract Vault is ERC4626 {
         strategyDuration = _strategyDuration;
         withdrawalDuration = _withdrawalDuration;
         modelHash = _modelHash;
-        oneInchInterface = OneInchInterface(_oneInchAddress); 
+        oneInchRouter = IGenericRouter(_oneInchAddress);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -200,7 +201,7 @@ contract Vault is ERC4626 {
         // !!! swap assets into 50/50 pair and WETH
         // !!! send both assets to relayer
 
-        oneInchInterface.swap()
+        // IGenericRouter.swap();
 
         // relayer.transfer(address(this).balance);
     }
