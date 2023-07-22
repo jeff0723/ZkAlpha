@@ -39,9 +39,8 @@ contract Relayer is MerkleTree {
         IWithdrawVerifier _withdrawVerifier,
         ISwapVerifier _swapVerifier,
         IFinalizeVerifier _finalizeVerifier,
-        IHasher _hasher,
-        uint32 _merkleTreeHeight
-    ) MerkleTree(_merkleTreeHeight, _hasher) {
+        IHasher _hasher
+    ) MerkleTree(32, _hasher) {
         TOKEN = _token;
         depositVerifier = _depositVerifier;
         withdrawVerifier = _withdrawVerifier;
@@ -66,13 +65,15 @@ contract Relayer is MerkleTree {
         bytes32 _nullifier,
         ModelOutput calldata modelOutput
     ) public {
-        // uint256[] _publicInputs = new uint256[](4);
-        // _publicInputs[0] = roots[0];
-        // _publicInputs[1] = uint256(_nullifier);
+        uint256[4] memory _publicInputs;
+        _publicInputs[0] = uint256(root);
+        _publicInputs[1] = uint256(_nullifier);
+        _publicInputs[2] = modelInput.chainlinkPrice;
+        _publicInputs[3] = uint256(bytes32(abi.encodePacked(modelOutput.direction, modelOutput.amount)));
 
-        // require(
-        //     swapVerifier.verify(_publicInputs, _proof),
-        //     "Swap Verifier failed"
-        // );
+        require(
+            swapVerifier.verify(_publicInputs, _proof),
+            "Swap Verifier failed"
+        );
     }
 }
