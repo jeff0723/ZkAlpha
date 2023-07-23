@@ -23,6 +23,8 @@ export const DEPLOY_CONFIG = {
         rpcURL: "https://rpc.ankr.com/gnosis",
         usdcContractAddress: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
         wethContractAddress: "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
+        genericRouter: "0x1111111254EEB25477B68fb85Ed929f73A960582",
+        genericExecutor: "0x851DE4aE771483bFF6790F79ee78A92dAF400e76"
     },
     auroratestnet: {
         rpcURL: "https://testnet.aurora.dev",
@@ -45,8 +47,10 @@ export const DEPLOY_CONFIG = {
     },
     hardhat: {
         rpcURL: "",
-        usdcContractAddress: "",
-        wethContractAddress: ""
+        usdcContractAddress: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
+        wethContractAddress: "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
+        genericRouter: "0x1111111254EEB25477B68fb85Ed929f73A960582",
+        genericExecutor: "0x851DE4aE771483bFF6790F79ee78A92dAF400e76"
     }
 }
 

@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,6 +18,7 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "../common";
@@ -43,6 +45,8 @@ export interface RelayerInterface extends Interface {
       | "filledSubtrees"
       | "finalize"
       | "finalizeVerifier"
+      | "genericExecutor"
+      | "genericRouter"
       | "hashLeftRight"
       | "hasher"
       | "levels"
@@ -53,10 +57,13 @@ export interface RelayerInterface extends Interface {
       | "swapVerifier"
       | "transact"
       | "transactionResults"
+      | "uploadModel"
       | "withdraw"
       | "withdrawVerifier"
       | "zeros"
   ): FunctionFragment;
+
+  getEvent(nameOrSignatureOrTopic: "UploadModel"): EventFragment;
 
   encodeFunctionData(
     functionFragment: "FIELD_SIZE",
@@ -89,6 +96,14 @@ export interface RelayerInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "genericExecutor",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "genericRouter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "hashLeftRight",
     values: [AddressLike, BytesLike, BytesLike]
   ): string;
@@ -110,10 +125,14 @@ export interface RelayerInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transact",
-    values: [BytesLike, ModelOutputStruct, BytesLike]
+    values: [BytesLike, ModelOutputStruct, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "transactionResults",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "uploadModel",
     values: [BytesLike]
   ): string;
   encodeFunctionData(
@@ -145,6 +164,14 @@ export interface RelayerInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "genericExecutor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "genericRouter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "hashLeftRight",
     data: BytesLike
   ): Result;
@@ -166,12 +193,41 @@ export interface RelayerInterface extends Interface {
     functionFragment: "transactionResults",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "uploadModel",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawVerifier",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "zeros", data: BytesLike): Result;
+}
+
+export namespace UploadModelEvent {
+  export type InputTuple = [
+    relayer: AddressLike,
+    trader: AddressLike,
+    vault: AddressLike,
+    modelCommitment: BytesLike
+  ];
+  export type OutputTuple = [
+    relayer: string,
+    trader: string,
+    vault: string,
+    modelCommitment: string
+  ];
+  export interface OutputObject {
+    relayer: string;
+    trader: string;
+    vault: string;
+    modelCommitment: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface Relayer extends BaseContract {
@@ -249,6 +305,10 @@ export interface Relayer extends BaseContract {
 
   finalizeVerifier: TypedContractMethod<[], [string], "view">;
 
+  genericExecutor: TypedContractMethod<[], [string], "view">;
+
+  genericRouter: TypedContractMethod<[], [string], "view">;
+
   hashLeftRight: TypedContractMethod<
     [_hasher: AddressLike, _left: BytesLike, _right: BytesLike],
     [string],
@@ -270,7 +330,12 @@ export interface Relayer extends BaseContract {
   swapVerifier: TypedContractMethod<[], [string], "view">;
 
   transact: TypedContractMethod<
-    [_nullifier: BytesLike, modelOutput: ModelOutputStruct, _proof: BytesLike],
+    [
+      _nullifier: BytesLike,
+      modelOutput: ModelOutputStruct,
+      _proof: BytesLike,
+      _1inchV5Data: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -285,6 +350,12 @@ export interface Relayer extends BaseContract {
       }
     ],
     "view"
+  >;
+
+  uploadModel: TypedContractMethod<
+    [_cModel: BytesLike],
+    [string],
+    "nonpayable"
   >;
 
   withdraw: TypedContractMethod<
@@ -349,6 +420,12 @@ export interface Relayer extends BaseContract {
     nameOrSignature: "finalizeVerifier"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "genericExecutor"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "genericRouter"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "hashLeftRight"
   ): TypedContractMethod<
     [_hasher: AddressLike, _left: BytesLike, _right: BytesLike],
@@ -379,7 +456,12 @@ export interface Relayer extends BaseContract {
   getFunction(
     nameOrSignature: "transact"
   ): TypedContractMethod<
-    [_nullifier: BytesLike, modelOutput: ModelOutputStruct, _proof: BytesLike],
+    [
+      _nullifier: BytesLike,
+      modelOutput: ModelOutputStruct,
+      _proof: BytesLike,
+      _1inchV5Data: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -396,6 +478,9 @@ export interface Relayer extends BaseContract {
     ],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "uploadModel"
+  ): TypedContractMethod<[_cModel: BytesLike], [string], "nonpayable">;
   getFunction(
     nameOrSignature: "withdraw"
   ): TypedContractMethod<
@@ -416,5 +501,24 @@ export interface Relayer extends BaseContract {
     nameOrSignature: "zeros"
   ): TypedContractMethod<[i: BigNumberish], [string], "view">;
 
-  filters: {};
+  getEvent(
+    key: "UploadModel"
+  ): TypedContractEvent<
+    UploadModelEvent.InputTuple,
+    UploadModelEvent.OutputTuple,
+    UploadModelEvent.OutputObject
+  >;
+
+  filters: {
+    "UploadModel(address,address,address,bytes32)": TypedContractEvent<
+      UploadModelEvent.InputTuple,
+      UploadModelEvent.OutputTuple,
+      UploadModelEvent.OutputObject
+    >;
+    UploadModel: TypedContractEvent<
+      UploadModelEvent.InputTuple,
+      UploadModelEvent.OutputTuple,
+      UploadModelEvent.OutputObject
+    >;
+  };
 }

@@ -1,8 +1,8 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/IVerifier.sol": {
-      "lastModificationDate": 1690062302936,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/IVerifier.sol": {
+      "lastModificationDate": 1690069163268,
       "contentHash": "4c0b851a0993b5e7123bcfb79ae98c5a",
       "sourceName": "contracts/IVerifier.sol",
       "solcConfig": {
@@ -56,9 +56,66 @@
         "IWithdrawVerifier"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/Relayer.sol": {
-      "lastModificationDate": 1690062302937,
-      "contentHash": "adc4fa0af34deb0028edfa4ebea606f2",
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/mocks/MockVerifier.sol": {
+      "lastModificationDate": 1690069163271,
+      "contentHash": "dec1fde2201877d3fb37707fc2da06e6",
+      "sourceName": "contracts/mocks/MockVerifier.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [
+        "../IVerifier.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "DepositVerifier",
+        "FinalizeVerifier",
+        "SwapVerifier",
+        "WithdrawVerifier"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/Relayer.sol": {
+      "lastModificationDate": 1690073618516,
+      "contentHash": "8847a886ae4d29945df427f0f69aa462",
       "sourceName": "contracts/Relayer.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -104,7 +161,9 @@
         "./MerkleTree.sol",
         "solmate/tokens/ERC20.sol",
         "./Vault.sol",
-        "./IVerifier.sol"
+        "./IVerifier.sol",
+        "./interfaces/I1nchRouter.sol",
+        "./libraries/UniERC20.sol"
       ],
       "versionPragmas": [
         "^0.8.17"
@@ -113,65 +172,9 @@
         "Relayer"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/Vault.sol": {
-      "lastModificationDate": 1690062302937,
-      "contentHash": "92d770bbf20a18fd5639583151e36a3c",
-      "sourceName": "contracts/Vault.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          },
-          "remappings": [
-            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-            "ds-test/=lib/forge-std/lib/ds-test/src/",
-            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-            "forge-std/=lib/forge-std/src/",
-            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
-            "solmate/=lib/solmate/src/",
-            "weird-erc20/=lib/weird-erc20/src/"
-          ]
-        }
-      },
-      "imports": [
-        "solmate/tokens/ERC20.sol",
-        "solmate/auth/Owned.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.17"
-      ],
-      "artifacts": [
-        "IRelayer",
-        "Vault"
-      ]
-    },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/MerkleTree.sol": {
-      "lastModificationDate": 1690062047465,
-      "contentHash": "3f08698061f0b5ce622a67def3d4707c",
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/MerkleTree.sol": {
+      "lastModificationDate": 1690069163269,
+      "contentHash": "607685d02606f0f421e39a0ff07928e1",
       "sourceName": "contracts/MerkleTree.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -222,10 +225,10 @@
         "MerkleTree"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/lib/solmate/src/tokens/ERC20.sol": {
-      "lastModificationDate": 1690054303398,
-      "contentHash": "0c7c7ada139062536af09d69d96d395c",
-      "sourceName": "lib/solmate/src/tokens/ERC20.sol",
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/Vault.sol": {
+      "lastModificationDate": 1690073567992,
+      "contentHash": "bebf004f07f3ecd02de7ac5ba02744d1",
+      "sourceName": "contracts/Vault.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -266,69 +269,23 @@
           ]
         }
       },
-      "imports": [],
+      "imports": [
+        "solmate/tokens/ERC20.sol",
+        "solmate/auth/Owned.sol",
+        "./interfaces/I1nchRouter.sol",
+        "./libraries/UniERC20.sol"
+      ],
       "versionPragmas": [
-        ">=0.8.0"
+        "^0.8.17"
       ],
       "artifacts": [
-        "ERC20"
+        "IRelayer",
+        "Vault"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/lib/solmate/src/auth/Owned.sol": {
-      "lastModificationDate": 1690054303388,
-      "contentHash": "11fec455b72d2743b77d783d6017e1e9",
-      "sourceName": "lib/solmate/src/auth/Owned.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          },
-          "remappings": [
-            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-            "ds-test/=lib/forge-std/lib/ds-test/src/",
-            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-            "forge-std/=lib/forge-std/src/",
-            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
-            "solmate/=lib/solmate/src/",
-            "weird-erc20/=lib/weird-erc20/src/"
-          ]
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.8.0"
-      ],
-      "artifacts": [
-        "Owned"
-      ]
-    },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/interfaces/I1nchRouter.sol": {
-      "lastModificationDate": 1690062047466,
-      "contentHash": "c9e1017a341f95766f92a8148429c922",
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/interfaces/I1nchRouter.sol": {
+      "lastModificationDate": 1690073567992,
+      "contentHash": "003dc451605e2bcf9ff6173601e5266e",
       "sourceName": "contracts/interfaces/I1nchRouter.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -382,8 +339,8 @@
         "IGenericRouter"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/UniERC20.sol": {
-      "lastModificationDate": 1690062047468,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/UniERC20.sol": {
+      "lastModificationDate": 1690069163270,
       "contentHash": "2d4df5f6ddcf29c5dabc6e9e8bd59802",
       "sourceName": "contracts/libraries/UniERC20.sol",
       "solcConfig": {
@@ -440,8 +397,112 @@
         "UniERC20"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/SafeERC20.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/lib/solmate/src/tokens/ERC20.sol": {
+      "lastModificationDate": 1690044174780,
+      "contentHash": "0c7c7ada139062536af09d69d96d395c",
+      "sourceName": "lib/solmate/src/tokens/ERC20.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "ERC20"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/lib/solmate/src/auth/Owned.sol": {
+      "lastModificationDate": 1690044174777,
+      "contentHash": "11fec455b72d2743b77d783d6017e1e9",
+      "sourceName": "lib/solmate/src/auth/Owned.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "Owned"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/SafeERC20.sol": {
+      "lastModificationDate": 1690069163270,
       "contentHash": "f0b619588d02c2bc8c0526f12364683f",
       "sourceName": "contracts/libraries/SafeERC20.sol",
       "solcConfig": {
@@ -499,10 +560,10 @@
         "SafeERC20"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/interfaces/IERC20MetadataUppercase.sol": {
-      "lastModificationDate": 1690062047466,
-      "contentHash": "51d5c3efc359f69c224cbc8f927c611e",
-      "sourceName": "contracts/interfaces/IERC20MetadataUppercase.sol",
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/interfaces/IDaiLikePermit.sol": {
+      "lastModificationDate": 1690069163269,
+      "contentHash": "0b6b2bcb1d551c39449e883583743e9f",
+      "sourceName": "contracts/interfaces/IDaiLikePermit.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -548,221 +609,11 @@
         "^0.8.0"
       ],
       "artifacts": [
-        "IERC20MetadataUppercase"
+        "IDaiLikePermit"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/StringUtil.sol": {
-      "lastModificationDate": 1690062047467,
-      "contentHash": "8e21b3af4cff1dc773ea12ee21eaa857",
-      "sourceName": "contracts/libraries/StringUtil.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          },
-          "remappings": [
-            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-            "ds-test/=lib/forge-std/lib/ds-test/src/",
-            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-            "forge-std/=lib/forge-std/src/",
-            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
-            "solmate/=lib/solmate/src/",
-            "weird-erc20/=lib/weird-erc20/src/"
-          ]
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "StringUtil"
-      ]
-    },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
-      "lastModificationDate": 1690054294839,
-      "contentHash": "df36f7051335cd1e748b1b6463b7fdd3",
-      "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          },
-          "remappings": [
-            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-            "ds-test/=lib/forge-std/lib/ds-test/src/",
-            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-            "forge-std/=lib/forge-std/src/",
-            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
-            "solmate/=lib/solmate/src/",
-            "weird-erc20/=lib/weird-erc20/src/"
-          ]
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC20"
-      ]
-    },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
-      "lastModificationDate": 1690054294840,
-      "contentHash": "909ab67fc5c25033fe6cd364f8c056f9",
-      "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          },
-          "remappings": [
-            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-            "ds-test/=lib/forge-std/lib/ds-test/src/",
-            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-            "forge-std/=lib/forge-std/src/",
-            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
-            "solmate/=lib/solmate/src/",
-            "weird-erc20/=lib/weird-erc20/src/"
-          ]
-        }
-      },
-      "imports": [
-        "../IERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC20Metadata"
-      ]
-    },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/interfaces/IPermit2.sol": {
-      "lastModificationDate": 1690062047467,
-      "contentHash": "0268ecff8b04ed0774c78bb9f798092a",
-      "sourceName": "contracts/interfaces/IPermit2.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          },
-          "remappings": [
-            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-            "ds-test/=lib/forge-std/lib/ds-test/src/",
-            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
-            "forge-std/=lib/forge-std/src/",
-            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
-            "solmate/=lib/solmate/src/",
-            "weird-erc20/=lib/weird-erc20/src/"
-          ]
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IPermit2"
-      ]
-    },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/interfaces/IWETH.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/interfaces/IWETH.sol": {
+      "lastModificationDate": 1690069163269,
       "contentHash": "b2bfeb2a722fd27fd12cff2206b28353",
       "sourceName": "contracts/interfaces/IWETH.sol",
       "solcConfig": {
@@ -815,10 +666,10 @@
         "IWETH"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/interfaces/IDaiLikePermit.sol": {
-      "lastModificationDate": 1690062047466,
-      "contentHash": "0b6b2bcb1d551c39449e883583743e9f",
-      "sourceName": "contracts/interfaces/IDaiLikePermit.sol",
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/interfaces/IPermit2.sol": {
+      "lastModificationDate": 1690069163269,
+      "contentHash": "0268ecff8b04ed0774c78bb9f798092a",
+      "sourceName": "contracts/interfaces/IPermit2.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -864,11 +715,11 @@
         "^0.8.0"
       ],
       "artifacts": [
-        "IDaiLikePermit"
+        "IPermit2"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/RevertReasonForwarder.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/RevertReasonForwarder.sol": {
+      "lastModificationDate": 1690069163270,
       "contentHash": "005165fbdd2ede26a42fcd5c3f3557e1",
       "sourceName": "contracts/libraries/RevertReasonForwarder.sol",
       "solcConfig": {
@@ -919,8 +770,60 @@
         "RevertReasonForwarder"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/extensions/draft-IERC20Permit.sol": {
-      "lastModificationDate": 1690054294841,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1690044412847,
+      "contentHash": "df36f7051335cd1e748b1b6463b7fdd3",
+      "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/extensions/draft-IERC20Permit.sol": {
+      "lastModificationDate": 1690044412849,
       "contentHash": "fb7fa5ae1762ad9a1dd91a8bbd510cb1",
       "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/draft-IERC20Permit.sol",
       "solcConfig": {
@@ -971,8 +874,8 @@
       ],
       "artifacts": []
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol": {
-      "lastModificationDate": 1690054294840,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol": {
+      "lastModificationDate": 1690044412849,
       "contentHash": "aa849939a4ae83a4dcb2dca9b3e9e707",
       "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Permit.sol",
       "solcConfig": {
@@ -1023,8 +926,221 @@
         "IERC20Permit"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/RevertReasonParser.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/interfaces/IERC20MetadataUppercase.sol": {
+      "lastModificationDate": 1690069163269,
+      "contentHash": "51d5c3efc359f69c224cbc8f927c611e",
+      "sourceName": "contracts/interfaces/IERC20MetadataUppercase.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20MetadataUppercase"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/StringUtil.sol": {
+      "lastModificationDate": 1690069163270,
+      "contentHash": "8e21b3af4cff1dc773ea12ee21eaa857",
+      "sourceName": "contracts/libraries/StringUtil.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "StringUtil"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+      "lastModificationDate": 1690044412849,
+      "contentHash": "909ab67fc5c25033fe6cd364f8c056f9",
+      "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [
+        "../IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20Metadata"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/mocks/MockCoin.sol": {
+      "lastModificationDate": 1690069163270,
+      "contentHash": "48b2d2f5516505c44746eb5ce6b4cd9c",
+      "sourceName": "contracts/mocks/MockCoin.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [
+        "solmate/tokens/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "MockUSDC",
+        "MockWETH"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/RevertReasonParser.sol": {
+      "lastModificationDate": 1690069163270,
       "contentHash": "ee54f0232367995754bf1b5c8b045eb1",
       "sourceName": "contracts/libraries/RevertReasonParser.sol",
       "solcConfig": {
@@ -1077,8 +1193,62 @@
         "RevertReasonParser"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/interfaces/ICreate3Deployer.sol": {
-      "lastModificationDate": 1690062047466,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/mocks/MockHasher.sol": {
+      "lastModificationDate": 1690069163270,
+      "contentHash": "52235c84a49621fe59afd3824c13f6b8",
+      "sourceName": "contracts/mocks/MockHasher.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          },
+          "remappings": [
+            "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+            "ds-test/=lib/forge-std/lib/ds-test/src/",
+            "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+            "forge-std/=lib/forge-std/src/",
+            "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+            "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+            "solmate/=lib/solmate/src/",
+            "weird-erc20/=lib/weird-erc20/src/"
+          ]
+        }
+      },
+      "imports": [
+        "../MerkleTree.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "MockHasher"
+      ]
+    },
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/interfaces/ICreate3Deployer.sol": {
+      "lastModificationDate": 1690069163269,
       "contentHash": "98fff2843860023f3314a68f4cf80d75",
       "sourceName": "contracts/interfaces/ICreate3Deployer.sol",
       "solcConfig": {
@@ -1129,8 +1299,8 @@
         "ICreate3Deployer"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/AddressArray.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/AddressArray.sol": {
+      "lastModificationDate": 1690069163269,
       "contentHash": "505df517c31df47ae9e6b40dfbb7d9ed",
       "sourceName": "contracts/libraries/AddressArray.sol",
       "solcConfig": {
@@ -1181,8 +1351,8 @@
         "AddressArray"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/AddressSet.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/AddressSet.sol": {
+      "lastModificationDate": 1690069163270,
       "contentHash": "a38734ff06779afe02016919c34046f2",
       "sourceName": "contracts/libraries/AddressSet.sol",
       "solcConfig": {
@@ -1235,8 +1405,8 @@
         "AddressSet"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/AddressLib.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/AddressLib.sol": {
+      "lastModificationDate": 1690069163270,
       "contentHash": "24fbc421ebb0dfb01236578b0775bedf",
       "sourceName": "contracts/libraries/AddressLib.sol",
       "solcConfig": {
@@ -1287,8 +1457,8 @@
         "AddressLib"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/contracts/libraries/ECDSA.sol": {
-      "lastModificationDate": 1690062047467,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/libraries/ECDSA.sol": {
+      "lastModificationDate": 1690069163270,
       "contentHash": "eb9c746ca122e15bcb19b4c3252a3c75",
       "sourceName": "contracts/libraries/ECDSA.sol",
       "solcConfig": {
@@ -1341,8 +1511,8 @@
         "ECDSA"
       ]
     },
-    "/Users/jeff0723/Desktop/MyCode/eth-paris/zkalpha/packages/contracts/lib/openzeppelin-contracts/contracts/interfaces/IERC1271.sol": {
-      "lastModificationDate": 1690054294826,
+    "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/lib/openzeppelin-contracts/contracts/interfaces/IERC1271.sol": {
+      "lastModificationDate": 1690044412829,
       "contentHash": "8fe867b95c856b204f954a1910e28a1e",
       "sourceName": "lib/openzeppelin-contracts/contracts/interfaces/IERC1271.sol",
       "solcConfig": {

@@ -54,7 +54,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IGenericRouter.SwapDescription",
+        internalType: "struct SwapDescription",
         name: "desc",
         type: "tuple",
       },
@@ -73,7 +73,7 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "returnAmountm",
+        name: "returnAmount",
         type: "uint256",
       },
       {

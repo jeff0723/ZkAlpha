@@ -10,20 +10,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 	const deployConfig = DEPLOY_CONFIG as any;
 	if (deployConfig[network.name]) {
-		const getCoins = async () => {
-			if (network.name === "hardhat") {
-				const usdc = await get("MockUSDC");
-				const weth = await get("MockWETH");
-				return [usdc.address, weth.address];
-			} else {
-				return [
-					deployConfig[network.name].usdcContractAddress,
-					deployConfig[network.name].wethContractAddress,
-				];
-			}
-		};
-		const [usdcAddr, wethAddr] = await getCoins();
-
 		const dVerifier = await get("DepositVerifier");
 		const wVerifier = await get("WithdrawVerifier");
 		const sVerifier = await get("SwapVerifier");
@@ -33,13 +19,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 		await deploy("Relayer", {
 			from: deployer,
 			args: [
-				usdcAddr,
-				wethAddr,
+				deployConfig[network.name].usdcContractAddress,
+				deployConfig[network.name].wethContractAddress,
 				dVerifier.address,
 				wVerifier.address,
 				sVerifier.address,
 				fVerifier.address,
 				mHasher.address,
+				deployConfig[network.name].genericRouter,
+				deployConfig[network.name].genericExecutor,
 			]
 		})		
 	}

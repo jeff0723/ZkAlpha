@@ -23,14 +23,28 @@ import type {
 
 export interface IRelayerInterface extends Interface {
   getFunction(
-    nameOrSignature: "TOKEN_A" | "TOKEN_B" | "deposit" | "withdraw"
+    nameOrSignature:
+      | "TOKEN_A"
+      | "TOKEN_B"
+      | "deposit"
+      | "genericExecutor"
+      | "genericRouter"
+      | "withdraw"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "TOKEN_A", values?: undefined): string;
   encodeFunctionData(functionFragment: "TOKEN_B", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [BytesLike, BytesLike, BigNumberish, BigNumberish, BytesLike]
+    values: [BytesLike, BigNumberish, BigNumberish, AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "genericExecutor",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "genericRouter",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "withdraw",
@@ -40,6 +54,14 @@ export interface IRelayerInterface extends Interface {
   decodeFunctionResult(functionFragment: "TOKEN_A", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "TOKEN_B", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "genericExecutor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "genericRouter",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 }
 
@@ -93,14 +115,18 @@ export interface IRelayer extends BaseContract {
   deposit: TypedContractMethod<
     [
       _cNode: BytesLike,
-      _cModel: BytesLike,
       _balanceA: BigNumberish,
       _balanceB: BigNumberish,
+      _vault: AddressLike,
       _proof: BytesLike
     ],
     [bigint],
     "nonpayable"
   >;
+
+  genericExecutor: TypedContractMethod<[], [string], "nonpayable">;
+
+  genericRouter: TypedContractMethod<[], [string], "nonpayable">;
 
   withdraw: TypedContractMethod<
     [
@@ -129,14 +155,20 @@ export interface IRelayer extends BaseContract {
   ): TypedContractMethod<
     [
       _cNode: BytesLike,
-      _cModel: BytesLike,
       _balanceA: BigNumberish,
       _balanceB: BigNumberish,
+      _vault: AddressLike,
       _proof: BytesLike
     ],
     [bigint],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "genericExecutor"
+  ): TypedContractMethod<[], [string], "nonpayable">;
+  getFunction(
+    nameOrSignature: "genericRouter"
+  ): TypedContractMethod<[], [string], "nonpayable">;
   getFunction(
     nameOrSignature: "withdraw"
   ): TypedContractMethod<

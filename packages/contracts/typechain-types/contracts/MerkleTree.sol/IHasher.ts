@@ -21,14 +21,14 @@ import type {
 } from "../../common";
 
 export interface IHasherInterface extends Interface {
-  getFunction(nameOrSignature: "MiMCSponge"): FunctionFragment;
+  getFunction(nameOrSignature: "hash"): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "MiMCSponge",
+    functionFragment: "hash",
     values: [BigNumberish, BigNumberish]
   ): string;
 
-  decodeFunctionResult(functionFragment: "MiMCSponge", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hash", data: BytesLike): Result;
 }
 
 export interface IHasher extends BaseContract {
@@ -74,9 +74,9 @@ export interface IHasher extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  MiMCSponge: TypedContractMethod<
-    [in_xL: BigNumberish, in_xR: BigNumberish],
-    [[bigint, bigint] & { xL: bigint; xR: bigint }],
+  hash: TypedContractMethod<
+    [xL: BigNumberish, xR: BigNumberish],
+    [bigint],
     "view"
   >;
 
@@ -85,10 +85,10 @@ export interface IHasher extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "MiMCSponge"
+    nameOrSignature: "hash"
   ): TypedContractMethod<
-    [in_xL: BigNumberish, in_xR: BigNumberish],
-    [[bigint, bigint] & { xL: bigint; xR: bigint }],
+    [xL: BigNumberish, xR: BigNumberish],
+    [bigint],
     "view"
   >;
 

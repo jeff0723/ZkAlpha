@@ -43,11 +43,6 @@ const _abi = [
         type: "bytes32",
       },
       {
-        internalType: "bytes32",
-        name: "_cModel",
-        type: "bytes32",
-      },
-      {
         internalType: "uint256",
         name: "_balanceA",
         type: "uint256",
@@ -56,6 +51,11 @@ const _abi = [
         internalType: "uint256",
         name: "_balanceB",
         type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_vault",
+        type: "address",
       },
       {
         internalType: "bytes",
@@ -69,6 +69,32 @@ const _abi = [
         internalType: "uint32",
         name: "",
         type: "uint32",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "genericExecutor",
+    outputs: [
+      {
+        internalType: "contract IAggregationExecutor",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "genericRouter",
+    outputs: [
+      {
+        internalType: "contract IGenericRouter",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "nonpayable",

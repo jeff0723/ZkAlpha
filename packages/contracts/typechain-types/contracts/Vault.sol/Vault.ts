@@ -49,7 +49,7 @@ export interface VaultInterface extends Interface {
   encodeFunctionData(functionFragment: "cModel", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "depositToRelayer",
-    values: [BytesLike, BytesLike]
+    values: [BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "relayer", values?: undefined): string;
@@ -76,7 +76,7 @@ export interface VaultInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFromRelayer",
-    values: [BytesLike, BigNumberish, BigNumberish, BytesLike]
+    values: [BytesLike, BigNumberish, BigNumberish, BytesLike, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -178,7 +178,7 @@ export interface Vault extends BaseContract {
   cModel: TypedContractMethod<[], [string], "view">;
 
   depositToRelayer: TypedContractMethod<
-    [_cNode: BytesLike, _proof: BytesLike],
+    [_cNode: BytesLike, _proof: BytesLike, _1inchV5Data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -212,7 +212,8 @@ export interface Vault extends BaseContract {
       _nullifier: BytesLike,
       _balanceA: BigNumberish,
       _balanceB: BigNumberish,
-      _proof: BytesLike
+      _proof: BytesLike,
+      _1inchV5Data: BytesLike
     ],
     [void],
     "nonpayable"
@@ -231,7 +232,7 @@ export interface Vault extends BaseContract {
   getFunction(
     nameOrSignature: "depositToRelayer"
   ): TypedContractMethod<
-    [_cNode: BytesLike, _proof: BytesLike],
+    [_cNode: BytesLike, _proof: BytesLike, _1inchV5Data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -266,7 +267,8 @@ export interface Vault extends BaseContract {
       _nullifier: BytesLike,
       _balanceA: BigNumberish,
       _balanceB: BigNumberish,
-      _proof: BytesLike
+      _proof: BytesLike,
+      _1inchV5Data: BytesLike
     ],
     [void],
     "nonpayable"

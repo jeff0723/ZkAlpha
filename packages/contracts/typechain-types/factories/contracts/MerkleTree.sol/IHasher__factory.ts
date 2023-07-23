@@ -13,25 +13,20 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "in_xL",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "in_xR",
-        type: "uint256",
-      },
-    ],
-    name: "MiMCSponge",
-    outputs: [
-      {
-        internalType: "uint256",
         name: "xL",
         type: "uint256",
       },
       {
         internalType: "uint256",
         name: "xR",
+        type: "uint256",
+      },
+    ],
+    name: "hash",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "xO",
         type: "uint256",
       },
     ],

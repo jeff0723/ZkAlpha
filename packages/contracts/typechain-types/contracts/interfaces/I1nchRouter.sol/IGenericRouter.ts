@@ -21,47 +21,40 @@ import type {
   TypedContractMethod,
 } from "../../../common";
 
-export declare namespace IGenericRouter {
-  export type SwapDescriptionStruct = {
-    srcToken: AddressLike;
-    dstToken: AddressLike;
-    srcReceiver: AddressLike;
-    dstReceiver: AddressLike;
-    amount: BigNumberish;
-    minReturnAmount: BigNumberish;
-    flags: BigNumberish;
-  };
+export type SwapDescriptionStruct = {
+  srcToken: AddressLike;
+  dstToken: AddressLike;
+  srcReceiver: AddressLike;
+  dstReceiver: AddressLike;
+  amount: BigNumberish;
+  minReturnAmount: BigNumberish;
+  flags: BigNumberish;
+};
 
-  export type SwapDescriptionStructOutput = [
-    srcToken: string,
-    dstToken: string,
-    srcReceiver: string,
-    dstReceiver: string,
-    amount: bigint,
-    minReturnAmount: bigint,
-    flags: bigint
-  ] & {
-    srcToken: string;
-    dstToken: string;
-    srcReceiver: string;
-    dstReceiver: string;
-    amount: bigint;
-    minReturnAmount: bigint;
-    flags: bigint;
-  };
-}
+export type SwapDescriptionStructOutput = [
+  srcToken: string,
+  dstToken: string,
+  srcReceiver: string,
+  dstReceiver: string,
+  amount: bigint,
+  minReturnAmount: bigint,
+  flags: bigint
+] & {
+  srcToken: string;
+  dstToken: string;
+  srcReceiver: string;
+  dstReceiver: string;
+  amount: bigint;
+  minReturnAmount: bigint;
+  flags: bigint;
+};
 
 export interface IGenericRouterInterface extends Interface {
   getFunction(nameOrSignature: "swap"): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "swap",
-    values: [
-      AddressLike,
-      IGenericRouter.SwapDescriptionStruct,
-      BytesLike,
-      BytesLike
-    ]
+    values: [AddressLike, SwapDescriptionStruct, BytesLike, BytesLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
@@ -113,11 +106,11 @@ export interface IGenericRouter extends BaseContract {
   swap: TypedContractMethod<
     [
       executor: AddressLike,
-      desc: IGenericRouter.SwapDescriptionStruct,
+      desc: SwapDescriptionStruct,
       permit: BytesLike,
       data: BytesLike
     ],
-    [[bigint, bigint] & { returnAmountm: bigint; spentAmount: bigint }],
+    [[bigint, bigint] & { returnAmount: bigint; spentAmount: bigint }],
     "payable"
   >;
 
@@ -130,11 +123,11 @@ export interface IGenericRouter extends BaseContract {
   ): TypedContractMethod<
     [
       executor: AddressLike,
-      desc: IGenericRouter.SwapDescriptionStruct,
+      desc: SwapDescriptionStruct,
       permit: BytesLike,
       data: BytesLike
     ],
-    [[bigint, bigint] & { returnAmountm: bigint; spentAmount: bigint }],
+    [[bigint, bigint] & { returnAmount: bigint; spentAmount: bigint }],
     "payable"
   >;
 

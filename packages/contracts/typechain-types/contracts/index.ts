@@ -11,4 +11,6 @@ import type * as interfaces from "./interfaces";
 export type { interfaces };
 import type * as libraries from "./libraries";
 export type { libraries };
+import type * as mocks from "./mocks";
+export type { mocks };
 export type { Relayer } from "./Relayer";

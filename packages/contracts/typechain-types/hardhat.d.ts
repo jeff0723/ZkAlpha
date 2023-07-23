@@ -82,6 +82,34 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MerkleTree__factory>;
     getContractFactory(
+      name: "MockUSDC",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockUSDC__factory>;
+    getContractFactory(
+      name: "MockWETH",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockWETH__factory>;
+    getContractFactory(
+      name: "MockHasher",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockHasher__factory>;
+    getContractFactory(
+      name: "DepositVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DepositVerifier__factory>;
+    getContractFactory(
+      name: "FinalizeVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FinalizeVerifier__factory>;
+    getContractFactory(
+      name: "SwapVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SwapVerifier__factory>;
+    getContractFactory(
+      name: "WithdrawVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WithdrawVerifier__factory>;
+    getContractFactory(
       name: "Relayer",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Relayer__factory>;
@@ -204,6 +232,41 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.MerkleTree>;
     getContractAt(
+      name: "MockUSDC",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockUSDC>;
+    getContractAt(
+      name: "MockWETH",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockWETH>;
+    getContractAt(
+      name: "MockHasher",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockHasher>;
+    getContractAt(
+      name: "DepositVerifier",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DepositVerifier>;
+    getContractAt(
+      name: "FinalizeVerifier",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FinalizeVerifier>;
+    getContractAt(
+      name: "SwapVerifier",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SwapVerifier>;
+    getContractAt(
+      name: "WithdrawVerifier",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WithdrawVerifier>;
+    getContractAt(
       name: "Relayer",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -318,6 +381,34 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MerkleTree>;
     deployContract(
+      name: "MockUSDC",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockUSDC>;
+    deployContract(
+      name: "MockWETH",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockWETH>;
+    deployContract(
+      name: "MockHasher",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockHasher>;
+    deployContract(
+      name: "DepositVerifier",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.DepositVerifier>;
+    deployContract(
+      name: "FinalizeVerifier",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FinalizeVerifier>;
+    deployContract(
+      name: "SwapVerifier",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SwapVerifier>;
+    deployContract(
+      name: "WithdrawVerifier",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.WithdrawVerifier>;
+    deployContract(
       name: "Relayer",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Relayer>;
@@ -439,6 +530,41 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MerkleTree>;
+    deployContract(
+      name: "MockUSDC",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockUSDC>;
+    deployContract(
+      name: "MockWETH",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockWETH>;
+    deployContract(
+      name: "MockHasher",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockHasher>;
+    deployContract(
+      name: "DepositVerifier",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.DepositVerifier>;
+    deployContract(
+      name: "FinalizeVerifier",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FinalizeVerifier>;
+    deployContract(
+      name: "SwapVerifier",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SwapVerifier>;
+    deployContract(
+      name: "WithdrawVerifier",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.WithdrawVerifier>;
     deployContract(
       name: "Relayer",
       args: any[],

@@ -48,7 +48,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct IGenericRouter.SwapDescription",
+          "internalType": "struct SwapDescription",
           "name": "desc",
           "type": "tuple"
         },
@@ -67,7 +67,7 @@
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "returnAmountm",
+          "name": "returnAmount",
           "type": "uint256"
         },
         {
