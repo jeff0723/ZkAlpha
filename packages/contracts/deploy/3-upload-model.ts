@@ -14,6 +14,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 	const deployConfig = DEPLOY_CONFIG as any;
 	if (deployConfig[network.name]) {
         const relayerDeployment = await get("Relayer");
+        console.log("Relayer:", relayerDeployment.address);
         const relayer = Relayer__factory.connect(relayerDeployment.address, signer);
         const tx = await relayer.uploadModel("0x9372c470eeadd5ecd9c3c74c2b3cb633f8e2f2fad799250a0f70d652b6b825e4");
         const receipt = await tx.wait();

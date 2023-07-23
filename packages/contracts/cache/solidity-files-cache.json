@@ -226,8 +226,8 @@
       ]
     },
     "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/Vault.sol": {
-      "lastModificationDate": 1690078956628,
-      "contentHash": "5cbb80e0046a8e21e44b04e1e9b8a82a",
+      "lastModificationDate": 1690080891304,
+      "contentHash": "303b0caf58184fc2542d037853b67c6c",
       "sourceName": "contracts/Vault.sol",
       "solcConfig": {
         "version": "0.8.17",

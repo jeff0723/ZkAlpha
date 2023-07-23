@@ -59,6 +59,7 @@ contract Vault is Owned {
 
     function userDeposit(uint256 amount) public requireState(VaultState.DEPOSIT) {
         relayer.TOKEN_A().transferFrom(msg.sender, address(this), amount);
+        
         userWeights[msg.sender] += amount;
         totalWeights += amount;
     }
