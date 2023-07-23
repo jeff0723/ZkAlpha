@@ -50,8 +50,6 @@ contract Vault is Owned {
     ) Owned(_trader) {
         relayer = _relayer;
         cModel = _cModel;
-        relayer.TOKEN_A().approve(address(relayer), type(uint256).max);
-        relayer.TOKEN_B().approve(address(relayer), type(uint256).max);
     }
 
     modifier requireState(VaultState _state) {
@@ -83,6 +81,7 @@ contract Vault is Owned {
         relayer.genericRouter().swap(
             relayer.genericExecutor(), desc, abi.encodePacked(), _1inchV5Data
         );
+
         uint256 balanceA = relayer.TOKEN_A().balanceOf(address(this));
         uint256 balanceB = relayer.TOKEN_B().balanceOf(address(this));
         relayer.deposit(_cNode, balanceA, balanceB, address(this), _proof);

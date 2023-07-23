@@ -29,7 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 				deployConfig[network.name].genericRouter,
 				deployConfig[network.name].genericExecutor,
 			]
-		})		
+		});
 	}
 };
 export default func;
