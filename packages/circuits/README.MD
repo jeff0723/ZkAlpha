@@ -1,10 +1,10 @@
 # Relayer Circuits
 
 ## Project Overview
-Preprocessing zk-SNARKs allow proving correct executions of a preprocessed circuit without revealing it. This allows parties to grant access to their innovative computation models without revealing them. However, the execution histories of computations can leak the information about the computations themselves. Thus, we also use a mixing relayer (similar to Tornado Cash) to reduce information leackage. 
+Preprocessing zk-SNARKs allows proving correct executions of a preprocessed circuit without revealing it. This allows parties to grant access to their innovative computation models without revealing them. However, the execution histories of computations can leak the information about the computations themselves. Thus, we also use a mixing relayer (similar to Tornado Cash) to reduce information leackage. 
 
 ## Tech stack
-We use [ezkl](https://github.com/zkonduit/ezkl) to write circuits. The library allows algebraic circuits to be written in python (PyTorch modules to `.onnx` files to `halo2` circuits, with ~20 Einstein summations as basic operations). It also provides a solidity verifier out of the box. Speical thanks to [alexander-camuto](https://github.com/alexander-camuto) for actively answering the questions.
+We use [ezkl](https://github.com/zkonduit/ezkl) to write circuits. The library allows algebraic circuits to be written in python (PyTorch modules to `.onnx` files to `halo2` circuits, with ~20 Einstein summations as basic operations). It also provides a solidity verifier out of the box. Special thanks to [alexander-camuto](https://github.com/alexander-camuto) for actively answering the questions.
 
 ## Installation
 ```bash
@@ -15,15 +15,15 @@ pip3 install -r requirements.txt
 ```
 
 ## Relayer Overview
-We use a merkle tree to handle resource nodes, which are commitments to relevant data. Traders prove ownership of resources by opening the resource nodes in the Merkle tree and the opening the resource nodes themselves. They also need to prove the transitions are done correctly.
+We use a Merkle tree to handle resource nodes, which are commitments to relevant data. Traders prove ownership of resources by opening the resource nodes in the Merkle tree and the opening the resource nodes themselves. They also need to prove the transitions are done correctly.
 - A resource node is a commitment to the following data
-  - s (secret): to let an anomonous address to manipulate the resource
+  - s (secret): to let an anonymous address manipulate the resource
   - k (nullifier): to mark the status of the resource (transacted/nullified)
   - balance
   - cModel (commitment to a model): to ensure the trade decision is done by the committed model
-  - address: to ensure the withdraw address is the same as the deposit address for legal compliance
+  - address: to ensure the withdrawal address is the same as the deposit address for legal compliance
 - Interface
-  - Since only the depositor can update the balance by inserting a new resource node and nullifying the traded one, the transaction need to be split into two operations: `transact` and `finalize`
+  - Since only the depositor can update the balance by inserting a new resource node and nullifying the traded one, the transaction needs to be split into two operations: `transact` and `finalize`
   - `deposit`
     - The relayer receives the resource and inserts the resource node into the tree
   - `withdraw`
@@ -31,7 +31,7 @@ We use a merkle tree to handle resource nodes, which are commitments to relevant
   - `transact`
     - The relayer checks the resource node's balance, checks the model did the decision, executes the trade, and marks the resource as traded. The trade result is stored and the resource is awaiting finalization.
   - `finalize`
-    - The relayer checks the difference between the nodes then nullifys and inserts old and new nodes respectively.
+    - The relayer checks the difference between the nodes then nullifies and inserts old and new nodes respectively.
 
 ## Circuits PseudoCodes
 If you would like to know more about the details w/o diving into the actual circuits in `circuits.py`, here is a pseudocode for your reference.
