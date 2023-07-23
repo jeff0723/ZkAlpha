@@ -1,0 +1,46 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "SafeERC20",
+  "sourceName": "contracts/libraries/SafeERC20.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ForceApproveFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Permit2TransferAmountTooHigh",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SafeDecreaseAllowanceFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SafeIncreaseAllowanceFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SafePermitBadLength",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SafeTransferFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SafeTransferFromFailed",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x60566050600b82828239805160001a6073146043577f4e487b7100000000000000000000000000000000000000000000000000000000600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a453bd4bcf9c18cccd6349d4c0a4682e4349130f27b767b033ef86a129f08e6764736f6c63430008110033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a453bd4bcf9c18cccd6349d4c0a4682e4349130f27b767b033ef86a129f08e6764736f6c63430008110033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

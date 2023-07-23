@@ -1,0 +1,41 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "UniERC20",
+  "sourceName": "contracts/libraries/UniERC20.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ApproveCalledOnETH",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ETHTransferFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FromIsNotSender",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotEnoughValue",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ToIsNotThis",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x60566050600b82828239805160001a6073146043577f4e487b7100000000000000000000000000000000000000000000000000000000600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122064f74b75af4baf0df85a72a81e9ba8d36e787919dab3a1b54e79849f58368cf064736f6c63430008110033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122064f74b75af4baf0df85a72a81e9ba8d36e787919dab3a1b54e79849f58368cf064736f6c63430008110033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
