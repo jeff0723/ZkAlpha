@@ -1,7 +1,7 @@
 # Relayer Circuits
 
 ## Project Overview
-Preprocessing zk-SNARKs allows proving correct executions of a preprocessed circuit without revealing it. This allows parties to grant access to their innovative computation models without revealing them. However, the execution histories of computations can leak the information about the computations themselves. Thus, we also use a mixing relayer (similar to Tornado Cash) to reduce information leackage. 
+Preprocessing zk-SNARKs allows proving correct executions of a preprocessed circuit without revealing it. This allows parties to grant access to their innovative computation models without revealing them. However, the execution histories of computations can leak information about the computations themselves. Thus, we also use a mixing relayer (similar to Tornado Cash) to reduce information leakage. 
 
 ## Tech stack
 We use [ezkl](https://github.com/zkonduit/ezkl) to write circuits. The library allows algebraic circuits to be written in python (PyTorch modules to `.onnx` files to `halo2` circuits, with ~20 Einstein summations as basic operations). It also provides a solidity verifier out of the box. Special thanks to [alexander-camuto](https://github.com/alexander-camuto) for actively answering the questions.
