@@ -1,22 +1,39 @@
+import { USDC_ABI } from '@/constant/abis';
+import { USDC_ADDRESS } from '@/constant/address';
 import { getOneInchData } from '@/utils/actions/1inch';
+import { approve } from '@/utils/actions/erc20';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useAccount } from "wagmi";
-
+import { useContractRead } from 'wagmi'
+import ethers from 'ethers'
 type Props = {}
 enum Action {
     DEPOSIT,
     WITHDRAW
 }
 const StartegyPage = (props: Props) => {
+
     const router = useRouter()
     const { address } = useAccount()
     const [actionState, setActionState] = useState(Action.DEPOSIT)
-    const [depositAmount, setDepositAmount] = useState(0)
-    const [withDrawAmount, setWithdrawAmount] = useState(0)
+    const [depositAmount, setDepositAmount] = useState("0")
+    const [withDrawAmount, setWithdrawAmount] = useState("0")
+    const [usdcBalance, setUSDCBalance] = useState(0)
     const { pathname, query } = router
+
+    const { data, isError, isLoading } = useContractRead({
+        address: USDC_ADDRESS,
+        abi: USDC_ABI,
+        functionName: 'balanceOf',
+        args: [address],
+        onSuccess: (data) => {
+            setUSDCBalance(Number(data))
+        }
+    })
+    // console.log('balance: ', Number(data))
     return (
         <div className='w-full flex flex-col'>
             <div className='w-full h-[8px] bg-gradient-to-r from-white ' />
@@ -99,11 +116,14 @@ const StartegyPage = (props: Props) => {
                             </div>
                             <input value={actionState == Action.DEPOSIT ? depositAmount : withDrawAmount} className='p-4 rounded-md outline-0 bg-[#1b1b21] focus:border-none'
                                 onChange={(e) => {
+                                    if (isNaN(Number(e.target.value))) {
+                                        return
+                                    }
                                     if (actionState == Action.DEPOSIT) {
-                                        setDepositAmount(Number(e.target.value))
+                                        setDepositAmount(e.target.value)
                                     }
                                     if (actionState == Action.WITHDRAW) {
-                                        setWithdrawAmount(Number(e.target.value))
+                                        setWithdrawAmount(e.target.value)
                                     }
 
                                 }}></input>
@@ -112,12 +132,28 @@ const StartegyPage = (props: Props) => {
                                     Wallet Balance
                                 </div>
                                 <div className='text-sm'>
-                                    0 ETH
+                                    {(Number(usdcBalance ?? 0) / 10 ** 6).toFixed(3)} USDC
                                 </div>
                             </div>
                             <button
                                 onClick={async () => {
-                                    toast.success('Successfully deposited')
+                                    const amount = actionState == Action.DEPOSIT ? Number(depositAmount) : Number(withDrawAmount)
+                                    if (!amount || amount < 0 || isNaN(amount)) {
+                                        toast.error('Please enter an valid amount')
+                                        return
+                                    }
+                                    if (amount * 10 ** 6 > Number(usdcBalance)) {
+                                        toast.error('Insufficient balance')
+                                        return
+
+                                    }
+                                    try {
+                                        await approve("0x1BA85548aFFb8053b3520115fB2D1C437a5fbAaf", amount * 10 ** 6 / 2)
+                                    } catch (e) {
+                                        //@ts-ignore
+                                        toast.error(e.message)
+                                    }
+
                                     const response = await fetch('/api/get-data', {
                                         method: 'POST',
                                         body: JSON.stringify({
