@@ -1,10 +1,10 @@
 # Relayer Circuits
 
 ## Project Overview
-Preprocessing zk-SNARKs allow people to prove correct executions of a preprocessed circuit without revealing it. This allows people to grant access to their innovative computation without revealing it. However, the execution histories of computations can leak the information about the computations themselves. Thus, we propose to use a mixing relayer (similar to Tornado Cash) to reduce information leackage. 
+Preprocessing zk-SNARKs allow proving correct executions of a preprocessed circuit without revealing it. This allows parties to grant access to their innovative computation models without revealing them. However, the execution histories of computations can leak the information about the computations themselves. Thus, we also use a mixing relayer (similar to Tornado Cash) to reduce information leackage. 
 
 ## Tech stack
-We use [ezkl](https://github.com/zkonduit/ezkl) to write circuits. The library allows algebraic circuits to be written in python (PyTorch modules to `.ONNX` files to `halo2` circuits, with ~20 Einstein summations as basic operations). It also provides a solidity verifier out of the box. Speical thanks to [alexander-camuto](https://github.com/alexander-camuto) for actively answering the questions.
+We use [ezkl](https://github.com/zkonduit/ezkl) to write circuits. The library allows algebraic circuits to be written in python (PyTorch modules to `.onnx` files to `halo2` circuits, with ~20 Einstein summations as basic operations). It also provides a solidity verifier out of the box. Speical thanks to [alexander-camuto](https://github.com/alexander-camuto) for actively answering the questions.
 
 ## Installation
 ```bash
@@ -15,14 +15,14 @@ pip3 install -r requirements.txt
 ```
 
 ## Relayer Overview
-We use a merkle tree to handle resource nodes, which are commitments to relevant data. Traders prove ownership of resources by opening the resource nodes in the Merkle tree and the opening the resource nodes themselves. They also prove the transitions are done correctly.
+We use a merkle tree to handle resource nodes, which are commitments to relevant data. Traders prove ownership of resources by opening the resource nodes in the Merkle tree and the opening the resource nodes themselves. They also need to prove the transitions are done correctly.
 - A resource node is a commitment to the following data
   - s (secret): to let an anomonous address to manipulate the resource
   - k (nullifier): to mark the status of the resource (transacted/nullified)
   - balance
   - cModel (commitment to a model): to ensure the trade decision is done by the committed model
   - address: to ensure the withdraw address is the same as the deposit address for legal compliance
-- 4 main functions
+- Interface
   - Since only the depositor can update the balance by inserting a new resource node and nullifying the traded one, the transaction need to be split into two operations: `transact` and `finalize`
   - `deposit`
     - The relayer receives the resource and inserts the resource node into the tree
@@ -87,6 +87,7 @@ def finalize(proof, nullifier, cNode2, tradeId):
 	statusPool[nullifier] = status.Nullified
 ```
 
-## Limiations
-For now, due to the limitation of `tract` libary, our ezkl circuits cannot be exported to onnx during the hackathon. 
+## Limitations
+Our pytorch modules (ezkl circuits) cannot be exported to onnx during the hackathon since the [tract](https://github.com/sonos/tract) library cannot inference the onnx output for our circuits. 
 We are currently using a mock verifier contract to make proofs pass.
+We plan to improve related libraries or [directly use Halo2](https://github.com/privacy-scaling-explorations/snark-verifier/tree/main/snark-verifier-sdk) circuits for the backend.
