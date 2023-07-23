@@ -90,4 +90,4 @@ def finalize(proof, nullifier, cNode2, tradeId):
 ## Limitations
 Our pytorch modules (ezkl circuits) cannot be exported to onnx during the hackathon since the [tract](https://github.com/sonos/tract) library cannot inference the onnx output for our circuits. 
 We are currently using a mock verifier contract to make proofs pass.
-We plan to improve related libraries or [directly use Halo2](https://github.com/privacy-scaling-explorations/snark-verifier/tree/main/snark-verifier-sdk) circuits for the backend.
+We plan to improve related libraries or [directly use Halo2 circuits](https://github.com/privacy-scaling-explorations/snark-verifier/tree/main/snark-verifier-sdk) for the backend. Also, we plan to use recursive proof solidity verifier (for verifying a circuit that contains verification of the model execution proof given the model's verifying key) instead of just model commitment.
