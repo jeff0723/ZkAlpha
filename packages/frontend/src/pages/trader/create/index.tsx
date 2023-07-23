@@ -1,6 +1,8 @@
 import React, { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { createVault } from '@/utils/actions/relayer'
+import toast from 'react-hot-toast';
 
 type Props = {}
 
@@ -49,7 +51,18 @@ const CreateVaultPage = (props: Props) => {
                     </div>
                     <input className='px-2 py-3 outline-0 bg-[#1b1b21] rounded-md'></input>
                     <div className='pt-8 w-full'>
-                        <button className='w-full p-4 rounded-md font-bold bg-white text-black hover:border-white hover:border-2 hover:bg-black hover:text-white'>
+                        <button
+                            onClick={async () => {
+                                try {
+                                    await createVault("0x9372c470eeadd5ecd9c3c74c2b3cb633f8e2f2fad799250a0f70d652b6b825e4")
+                                    toast.success('Successfully created vault')
+                                } catch (e) {
+                                    //@ts-ignore
+                                    toast.error(e.message)
+                                }
+
+                            }}
+                            className='w-full p-4 rounded-md font-bold bg-white text-black hover:border-white hover:border-2 hover:bg-black hover:text-white'>
                             Create
                         </button>
                     </div>
