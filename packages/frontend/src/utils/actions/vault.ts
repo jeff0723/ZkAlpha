@@ -9,6 +9,7 @@ export const deposit = async (amount: number): Promise<TransactionReceipt> => {
     const { request } = await prepareWriteContract({
         address: VAULT_ADDRESS,
         abi: VAULT_ABI,
+        //@ts-ignore
         functionName: 'deposit',
         args: [amount]
     });
@@ -30,6 +31,7 @@ export const withdraw = async (amount: number): Promise<TransactionReceipt> => {
     const { request } = await prepareWriteContract({
         address: VAULT_ADDRESS,
         abi: VAULT_ABI,
+        //@ts-ignore
         functionName: 'withdraw',
         args: [amount]
     });
@@ -52,6 +54,7 @@ export const createVault = async (modelCommitmentHash: string): Promise<Transact
     const { request } = await prepareWriteContract({
         address: VAULT_ADDRESS,
         abi: VAULT_ABI,
+        //@ts-ignore
         functionName: 'updloadModel',
         args: [modelCommitmentHash]
     });
