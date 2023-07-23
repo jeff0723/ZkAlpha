@@ -9,7 +9,7 @@ export const deposit = async (amount: number): Promise<TransactionReceipt> => {
     const { request } = await prepareWriteContract({
         address: VAULT_ADDRESS,
         abi: VAULT_ABI,
-        functionName: 'deposit',
+        functionName: 'userDeposit',
         args: [amount]
     });
 

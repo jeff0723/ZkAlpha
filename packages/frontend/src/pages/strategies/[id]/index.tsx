@@ -1,5 +1,5 @@
 import { USDC_ABI } from '@/constant/abis';
-import { USDC_ADDRESS } from '@/constant/address';
+import { USDC_ADDRESS, VAULT_ADDRESS } from '@/constant/address';
 import { getOneInchData } from '@/utils/actions/1inch';
 import { approve } from '@/utils/actions/erc20';
 import clsx from 'clsx';
@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { useAccount } from "wagmi";
 import { useContractRead } from 'wagmi'
 import ethers from 'ethers'
+import { deposit } from '@/utils/actions/vault';
 type Props = {}
 enum Action {
     DEPOSIT,
@@ -22,6 +23,7 @@ const StartegyPage = (props: Props) => {
     const [depositAmount, setDepositAmount] = useState("0")
     const [withDrawAmount, setWithdrawAmount] = useState("0")
     const [usdcBalance, setUSDCBalance] = useState(0)
+    const [allowance, setAllowance] = useState(0)
     const { pathname, query } = router
 
     const { data, isError, isLoading } = useContractRead({
@@ -33,7 +35,17 @@ const StartegyPage = (props: Props) => {
             setUSDCBalance(Number(data))
         }
     })
+    const { data: allowanceData } = useContractRead({
+        address: USDC_ADDRESS,
+        abi: USDC_ABI,
+        functionName: 'allowance',
+        args: [address, VAULT_ADDRESS],
+        onSuccess: (data) => {
+            setAllowance(Number(data))
+        }
+    })
     // console.log('balance: ', Number(data))
+    // console.log("allowance: ", allowance)
     return (
         <div className='w-full flex flex-col'>
             <div className='w-full h-[8px] bg-gradient-to-r from-white ' />
@@ -137,18 +149,19 @@ const StartegyPage = (props: Props) => {
                             </div>
                             <button
                                 onClick={async () => {
-                                    const response = await fetch('/api/get-data', {
-                                        method: 'POST',
-                                        body: JSON.stringify({
-                                            address,
-                                            amount: 10
-                                        }),
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        }
-                                    })
-                                    const data = await response.json()
-                                    console.log(data)
+                                    // const response = await fetch('/api/get-data', {
+                                    //     method: 'POST',
+                                    //     body: JSON.stringify({
+                                    //         address,
+                                    //         amount: 10
+                                    //     }),
+                                    //     headers: {
+                                    //         'Content-Type': 'application/json'
+                                    //     }
+                                    // })
+                                    // const data = await response.json()
+                                    // console.log(data)
+
                                     const amount = actionState == Action.DEPOSIT ? Number(depositAmount) : Number(withDrawAmount)
                                     if (!amount || amount < 0 || isNaN(amount)) {
                                         toast.error('Please enter an valid amount')
@@ -160,7 +173,13 @@ const StartegyPage = (props: Props) => {
 
                                     }
                                     try {
-                                        await approve("0x1BA85548aFFb8053b3520115fB2D1C437a5fbAaf", amount * 10 ** 6 / 2)
+                                        if (allowance < amount || allowance == 0) {
+                                            await approve(VAULT_ADDRESS, amount * 10 ** 6 / 2)
+                                            toast.success('Successfully approved')
+                                        }
+
+                                        await deposit(amount * 10 ** 6)
+                                        toast.success('Successfully deposited')
                                     } catch (e) {
                                         //@ts-ignore
                                         toast.error(e.message)
