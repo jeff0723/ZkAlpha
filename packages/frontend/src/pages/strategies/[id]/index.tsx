@@ -137,6 +137,18 @@ const StartegyPage = (props: Props) => {
                             </div>
                             <button
                                 onClick={async () => {
+                                    const response = await fetch('/api/get-data', {
+                                        method: 'POST',
+                                        body: JSON.stringify({
+                                            address,
+                                            amount: 10
+                                        }),
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        }
+                                    })
+                                    const data = await response.json()
+                                    console.log(data)
                                     const amount = actionState == Action.DEPOSIT ? Number(depositAmount) : Number(withDrawAmount)
                                     if (!amount || amount < 0 || isNaN(amount)) {
                                         toast.error('Please enter an valid amount')
@@ -154,18 +166,7 @@ const StartegyPage = (props: Props) => {
                                         toast.error(e.message)
                                     }
 
-                                    const response = await fetch('/api/get-data', {
-                                        method: 'POST',
-                                        body: JSON.stringify({
-                                            address,
-                                            amount: 10
-                                        }),
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        }
-                                    })
-                                    const data = await response.json()
-                                    console.log(data)
+
                                 }}
                                 className='p-4 rounded-md font-bold bg-white text-black hover:border-white hover:border-2 hover:bg-black hover:text-white'> {
                                     actionState === Action.DEPOSIT ? 'Deposit' : 'Withdraw'

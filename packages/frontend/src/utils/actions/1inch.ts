@@ -1,7 +1,7 @@
 export const getOneInchData = async (address: string, amount: number) => {
-    const url = 'https://api.1inch.dev/swap/v5.2/1/swap';
-    const srcAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-    const dstAddress = '0x111111111117dc0aa78b770fa6a738034120c302';
+    const url = 'https://api.1inch.dev/swap/v5.2/100/swap';
+    const srcAddress = '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83';
+    const dstAddress = '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1';
     const fromAddress = address
     const slippage = '50';
     const headers = {
