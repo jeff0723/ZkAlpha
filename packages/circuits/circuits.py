@@ -6,6 +6,8 @@ import json
 import logging
 from typing import *
 
+Field = int
+
 # environment convigurations
 model_path = os.path.join('network.onnx')
 pk_path = os.path.join('test.pk')
@@ -30,8 +32,8 @@ logging.basicConfig(format=FORMAT)
 logging.getLogger().setLevel(logging.DEBUG)
 
 ## Defining the circuit, TOMO
-Field = int
 M = 1e9+7
+n_model_input = 5
 
 class Hasher(): 
     def hash2(self, x1, x2) -> Field:
@@ -55,7 +57,10 @@ class OpenNodeCircuit(nn.Module):
     def __init__(self):
         super(OpenNodeCircuit, self).__init__()
         self.hasher = Hasher()
-    
+
+    """
+    x is of shape [-1, 7]
+    """
     def forward(self, x):
         return self.hasher.hash_list(x[:-1]) - x[-1] 
 
@@ -123,22 +128,41 @@ class FinalizeCircuit(nn.Module):
         # public: delta1, delta2, nullifier (delta from nullifier)
         return [y0, y1, y2, y3]
 
+
+class TradingModel(nn.Module): 
+    def __init__(self):
+        super(TradingModel, self).__init__()
+        self.linear = nn.Linear(in_features=5, out_features=1)
+    
+    """
+    x is in shape [batch, 5]
+    """
+    def forward(self, x):
+        return self.linear(x)
+
+
+# use hashed visibility
 class TransactCircuit(nn.Module):
     def __init__(self):
         super(FinalizeCircuit, self).__init__()
         self.hasher = Hasher()
+        self.model = TradingModel()
         self.merkle = MerkleProofCircuit()
+        self.openNode = OpenNodeCircuit()
 
     def forward(self, x):
-        k, s, b1, b2, cModel, addr, cNode, index, nullifier, *y = x
-        k2, s2, b12, b22, cNode2, delta1, delta2, *path = y
+        k, s, b1, b2, cModel, addr, cNode, index, nullifier, b12, b22, *y = x
+        model_input = y[:n_model_input]
+        path = y[n_model_input]
         y0 = self.merkle.verify_merkle_proof(cNode, index, path)
-        y1 = self.hasher.hash(k) - nullifier
-        y2 = b1-b12 - delta1
-        y3 = b2-b22 - delta2
+        y1 = self.openNode([k, s, b1, b2, cModel, addr, cNode])
+        y2 = self.hasher.hash(k) - nullifier
+        model_output1, model_output2 = self.model(model_input)
+        y3 = b1-b12 - model_output1
+        y4 = b2-b22 - model_output2
         # assume the output 0
         # public: delta1, delta2, nullifier (delta from nullifier)
-        return [y0, y1, y2, y3]
+        return [y0, y1, y2, y3, y4]
 
 
 def export_circuit(Model, x):
