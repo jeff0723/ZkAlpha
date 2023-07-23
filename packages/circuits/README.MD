@@ -1,14 +1,89 @@
-# ZK Alpha Circuit
+# Relayer Circuits
+
+## Tech stack
+We use [ezkl](https://github.com/zkonduit/ezkl) to write circuits. The library allows algebraic circuits to be written in python (PyTorch modules to `.ONNX` files to `halo2` circuits, with ~20 Einstein summations as basic operations). It also provides a solidity verifier out of the box. Speical thanks to [alexander-camuto](https://github.com/alexander-camuto) for actively answering the questions.
 
 ## Installation
 ```bash
-python -m venv .env
-source .env/bin/activate
-pip install -r requirements.txt
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
 ./install.sh
 ```
 
-`maturin develop --release --features python-bindings`?
+## Overview
+- A merkle tree handle resource nodes, representing the hidden balances of the vaults
+- A resource node is a commitment to the following data
+  - s (secret): to let an anomonous address to manipulate the resource
+  - k (nullifier): to mark the status of the resource (transacted/nullified)
+  - balance
+  - cModel (commitment to a model): to ensure the trade decision is done by the committed model
+  - address: to ensure the withdraw address is the same as the deposit address for legal compliance
+- 4 main functions
+  - Since only the depositor can update the balance by inserting a new resource node and nullifying the traded one, the transaction need to be split into two operations: `transact` and `finalize`
+  - `deposit`
+    - The relayer accepts the resource and inserts the resource node into the tree
+  - `withdraw`
+    - The relayer checks the resource node's balance, transfer back the resource, and marks the resource nullified
+  - `transact`
+    - The relayer checks the resource node's balance, checks the model did the decision, executes the trade, and marks the resource as traded. The trade result is stored and the resource is awaiting finalization.
+  - `finalize`
+    - The relayer checks the difference between the nodes then nullifys and inserts old and new nodes respectively.
 
-# dependencies specific to tutorials
-pip install torch pandas numpy seaborn jupyter onnx kaggle py-solc-x web3 librosa
+## Circuits PseudoCodes
+If you would like to know more about the details w/o diving into the actual circuits in `circuits.py`, here is a pseudocode for your reference.
+
+```python
+def deposit(cNode, cModel, _balance):
+	# public inputs
+	# _balance, cNode, cModel, address
+	verify(lambda:
+		cNode == H(k, s, balance, cModel, address)
+		balance == _balance
+	)
+	_process_deposit(_balance)
+
+def withdraw(proof, nullifier, withdrawData):
+	# public inputs
+	# treeRoot, nullifier, withdrawData, address
+	verify(lambda:
+		H(k, s, balance, cModel, address) = cNode in treeRoot
+		nullifier = H(k)
+		is_compatible_with(balance, withdrawData)
+	)
+	statusPool[nullifier] = status.Nullified
+	_process_withdraw(withdrawData, address)
+
+def transact(proof, nullifier, cModelInput, model_output):
+	# public inputs
+	# treeRoot, nullifier, cModulInput, model_output
+	verify(lambda:
+		H(k, s, balance, cModel, address) = cNode in treeRoot
+		H(model_input) = cModelInput
+		nullifier = H(k)
+		cModel = H(model)
+		model_output = model(model_input) # verifier circuit is required
+		is_compatible_with(balance, model_output)
+	)
+	result = _process_transact(model_output)
+	statusPool[nullifier] = status.Transacted
+    transactionResult[nullifier] = result
+
+def finalize(proof, nullifier, cNode2, tradeId):
+	# public inputs
+	# treeRoot, nullifier, cNode2
+    result = transaction_result[nullifier]
+	verify(lambda:
+		cNode = H(k, s, balance, cModel, address) in treeRoot
+		nullifier = H(k, "withdrew")
+		cNode2 = H(k2, s2, balance2, cModel, address)
+		balance = balance2 + result
+	)
+	_insert(cNode2)
+	assert(statusPool[nullifier] = status.Transacted)
+	statusPool[nullifier] = status.Nullified
+```
+
+## Limiations
+For now, due to the limitation of `tract` libary, the ezkl circuits cannot be exported to onnx correctly. 
+We are currently using a mock contract to make proofs pass. 

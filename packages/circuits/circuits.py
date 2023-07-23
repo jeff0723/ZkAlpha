@@ -62,6 +62,7 @@ class OpenNodeCircuit(nn.Module):
     x is of shape [-1, 7]
     """
     def forward(self, x):
+        assert(len(x) == 7)
         return self.hasher.hash_list(x[:-1]) - x[-1] 
 
 class MerkleProofCircuit(nn.Module):
@@ -269,13 +270,13 @@ def call_evm_verifier(addr):
 
 def main():
     # TOMO
-    x = torch.asarray([1, 1, 1, 1, 1, 5])
+    x = torch.asarray([1, 1, 1, 1, 1, 1, 6])
     visibility_settings = ["public", "hashed", "public"]
     cal_data = {
-        "input_data": [(0.1*torch.rand(40, *[3, 8, 8])).flatten().tolist()],
+        "input_data": [(torch.asarray([1, 1, 1, 1, 1, 1, 6])).flatten().tolist()],
     }
-
     export_circuit(Model=DepositCircuit, x=x)
+    
     generate_settings(visibility_settings=visibility_settings)
     test_proof_and_verification(cal_data=cal_data)
     generate_keys()
