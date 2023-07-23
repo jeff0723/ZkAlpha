@@ -89,7 +89,7 @@ contract Relayer is IRelayer, MerkleTree {
         _publicInputs[2] = uint256(_balanceA);
         _publicInputs[3] = uint256(_balanceB);
         _publicInputs[4] = uint256(uint160(_vault));
-        require(msg.sender == _vault, "not trader");
+        require(msg.sender == _vault, "vault not match");
         require(
             depositVerifier.verify(_publicInputs, _proof),
             "deposit: verify failed"
@@ -114,7 +114,7 @@ contract Relayer is IRelayer, MerkleTree {
         _publicInputs[2] = uint256(_balanceA);
         _publicInputs[3] = uint256(_balanceB);
         _publicInputs[4] = uint256(uint160(_vault));
-        require(msg.sender == _vault, "not trader");
+        require(msg.sender == _vault, "vault not match");
         require(
             nodeStatusPool[_nullifier] == NodeStatus.TRANSACTED,
             "transact: invalid node state"
