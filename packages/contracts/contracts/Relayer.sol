@@ -5,15 +5,8 @@ import {MerkleTree, IHasher} from "./MerkleTree.sol";
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {Vault, IRelayer} from "./Vault.sol";
 import {IDepositVerifier, IWithdrawVerifier, ISwapVerifier, IFinalizeVerifier} from "./IVerifier.sol";
-
-struct ModelOutput {
-    uint8 direction;
-    uint248 amount;
-}
-
-struct ModelInput {
-    uint256 chainlinkPrice;
-}
+import {IGenericRouter, IAggregationExecutor, SwapDescription} from "./interfaces/I1nchRouter.sol";
+import {IERC20} from "./libraries/UniERC20.sol";
 
 enum NodeStatus {
     EMPTY,
@@ -21,8 +14,22 @@ enum NodeStatus {
     NULLIFIED
 }
 
+enum SwapDirection {
+    A2B,
+    B2A
+}
+
+struct ModelOutput {
+    SwapDirection direction;
+    uint248 amount;
+}
+
+struct ModelInput {
+    uint256 chainlinkPrice;
+}
+
 struct TxResult {
-    uint8 direction;
+    SwapDirection direction;
     uint120 amountA;
     uint120 amountB;
 }
@@ -35,6 +42,8 @@ contract Relayer is IRelayer, MerkleTree {
     IWithdrawVerifier public withdrawVerifier;
     ISwapVerifier public swapVerifier;
     IFinalizeVerifier public finalizeVerifier;
+    IGenericRouter public genericRouter;
+    IAggregationExecutor public genericExecutor;
     ModelInput public modelInput;
     mapping(bytes32 => NodeStatus) public nodeStatusPool;
     mapping(bytes32 => TxResult) public transactionResults;
@@ -53,7 +62,9 @@ contract Relayer is IRelayer, MerkleTree {
         IWithdrawVerifier _withdrawVerifier,
         ISwapVerifier _swapVerifier,
         IFinalizeVerifier _finalizeVerifier,
-        IHasher _hasher
+        IHasher _hasher,
+        IGenericRouter _genericRouter,
+        IAggregationExecutor _genericExecutor
     ) MerkleTree(8, _hasher) {
         TOKEN_A = _tokenA;
         TOKEN_B = _tokenB;
@@ -61,6 +72,8 @@ contract Relayer is IRelayer, MerkleTree {
         withdrawVerifier = _withdrawVerifier;
         swapVerifier = _swapVerifier;
         finalizeVerifier = _finalizeVerifier;
+        genericRouter = _genericRouter;
+        genericExecutor = _genericExecutor;
     }
 
     function deposit(
@@ -103,6 +116,10 @@ contract Relayer is IRelayer, MerkleTree {
         _publicInputs[4] = uint256(uint160(_vault));
         require(msg.sender == _vault, "not trader");
         require(
+            nodeStatusPool[_nullifier] == NodeStatus.TRANSACTED,
+            "transact: invalid node state"
+        );
+        require(
             withdrawVerifier.verify(_publicInputs, _proof),
             "withdraw: verify failed"
         );
@@ -116,7 +133,8 @@ contract Relayer is IRelayer, MerkleTree {
     function transact(
         bytes32 _nullifier,
         ModelOutput calldata modelOutput,
-        bytes calldata _proof
+        bytes calldata _proof,
+        bytes calldata _1inchV5Data
     ) public {
         uint256[4] memory _publicInputs;
         _publicInputs[0] = uint256(MerkleTree.root);
@@ -124,12 +142,15 @@ contract Relayer is IRelayer, MerkleTree {
         _publicInputs[2] = modelInput.chainlinkPrice;
         _publicInputs[3] = uint256(bytes32(abi.encodePacked(modelOutput.direction, modelOutput.amount)));
         require(
+            nodeStatusPool[_nullifier] == NodeStatus.EMPTY,
+            "transact: invalid node state"
+        );
+        require(
             swapVerifier.verify(_publicInputs, _proof),
             "transact: verify failed"
         );
-
-        // TODO transactionResults[_nullifier] = _transact(modelOutput);
-        transactionResults[_nullifier] = TxResult(0, 0, 0);
+        
+        transactionResults[_nullifier] = _transact(modelOutput, _1inchV5Data);
         nodeStatusPool[_nullifier] = NodeStatus.TRANSACTED;
     }
 
@@ -142,6 +163,10 @@ contract Relayer is IRelayer, MerkleTree {
         _publicInputs[0] = uint256(MerkleTree.root);
         _publicInputs[1] = uint256(_nullifier);
         _publicInputs[2] = uint256(_cNode2);
+        require(
+            nodeStatusPool[_nullifier] == NodeStatus.TRANSACTED,
+            "transact: invalid node state"
+        );
         require(
             finalizeVerifier.verify(_publicInputs, _proof),
             "finalize: verify failed"
@@ -156,5 +181,36 @@ contract Relayer is IRelayer, MerkleTree {
         Vault vault = new Vault(IRelayer(address(this)), msg.sender, _cModel);
         emit UploadModel(address(this), msg.sender, address(vault), _cModel);
         return vault;
+    }
+
+    function _transact(
+        ModelOutput calldata _mOutput,
+        bytes calldata _1inchV5Data
+    ) private returns(TxResult memory txResult) {
+        SwapDescription memory _desc;
+        if (_mOutput.direction == SwapDirection.A2B) {
+            _desc.srcToken = IERC20(address(TOKEN_A));
+            _desc.dstToken = IERC20(address(TOKEN_B));
+        } else {
+            _desc.srcToken = IERC20(address(TOKEN_B));
+            _desc.dstToken = IERC20(address(TOKEN_A));            
+        }
+        _desc.srcReceiver = payable(address(this));
+        _desc.dstReceiver = payable(address(this));
+        _desc.amount = _mOutput.amount;
+        _desc.minReturnAmount = 0;
+        _desc.flags = 4;
+
+        (uint256 returnAmount, uint256 spentAmount) = genericRouter.swap(
+            genericExecutor, _desc, abi.encodePacked(), _1inchV5Data
+        );
+        txResult.direction = _mOutput.direction;
+        if (_mOutput.direction == SwapDirection.A2B) {
+            txResult.amountA = uint120(spentAmount);
+            txResult.amountB = uint120(returnAmount);
+        } else {
+            txResult.amountB = uint120(spentAmount);
+            txResult.amountA = uint120(returnAmount); 
+        }
     }
 }

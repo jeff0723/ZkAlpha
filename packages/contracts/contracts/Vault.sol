@@ -2,6 +2,8 @@
 pragma solidity ^0.8.17;
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {Owned} from "solmate/auth/Owned.sol";
+import {IGenericRouter, IAggregationExecutor, SwapDescription} from "./interfaces/I1nchRouter.sol";
+import {IERC20} from "./libraries/UniERC20.sol";
 
 interface IRelayer {
     function deposit(
@@ -22,6 +24,8 @@ interface IRelayer {
 
     function TOKEN_A() external returns (ERC20);
     function TOKEN_B() external returns (ERC20);
+    function genericRouter() external returns (IGenericRouter);
+    function genericExecutor() external returns (IAggregationExecutor);
 }
 
 enum VaultState {
@@ -63,9 +67,22 @@ contract Vault is Owned {
 
     function depositToRelayer(
         bytes32 _cNode,
-        bytes calldata _proof
+        bytes calldata _proof,
+        bytes calldata _1inchV5Data
     ) public requireState(VaultState.DEPOSIT) onlyOwner {
-        // TODO swap A to B and make 50 50
+        uint256 initBalanceA = relayer.TOKEN_A().balanceOf(address(this));
+        SwapDescription memory desc = SwapDescription(
+            IERC20(address(relayer.TOKEN_A())),
+            IERC20(address(relayer.TOKEN_B())),
+            payable(address(this)),
+            payable(address(this)), 
+            initBalanceA / 2,
+            0,
+            4
+        );
+        relayer.genericRouter().swap(
+            relayer.genericExecutor(), desc, abi.encodePacked(), _1inchV5Data
+        );
         uint256 balanceA = relayer.TOKEN_A().balanceOf(address(this));
         uint256 balanceB = relayer.TOKEN_B().balanceOf(address(this));
         relayer.deposit(_cNode, balanceA, balanceB, address(this), _proof);
@@ -76,10 +93,23 @@ contract Vault is Owned {
         bytes32 _nullifier,
         uint256 _balanceA,
         uint256 _balanceB,
-        bytes calldata _proof
+        bytes calldata _proof,
+        bytes calldata _1inchV5Data
     ) public requireState(VaultState.WAITING) onlyOwner {
         relayer.withdraw(_nullifier, _balanceA, _balanceB, address(this), _proof);
-        // TODO swap B to A
+        uint256 afterBalanceB = relayer.TOKEN_B().balanceOf(address(this));
+        SwapDescription memory desc = SwapDescription(
+            IERC20(address(relayer.TOKEN_B())),
+            IERC20(address(relayer.TOKEN_A())),
+            payable(address(this)),
+            payable(address(this)), 
+            afterBalanceB / 2,
+            0,
+            4
+        );
+        relayer.genericRouter().swap(
+            relayer.genericExecutor(), desc, abi.encodePacked(), _1inchV5Data
+        );
         afterBalance = relayer.TOKEN_A().balanceOf(address(this));
         state = VaultState.WITHDRAW;
     }
