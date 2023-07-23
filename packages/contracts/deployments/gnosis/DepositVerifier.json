@@ -1,0 +1,65 @@
+{
+  "address": "0x413f1776522196cDc944cFE0979Ee100069A057E",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[5]",
+          "name": "_publicInputs",
+          "type": "uint256[5]"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_proof",
+          "type": "bytes"
+        }
+      ],
+      "name": "verify",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xf178010430096f7c5b0b1f3c30a4c4785f3d00a8d16b36e5c8146c4523d5b523",
+  "receipt": {
+    "to": null,
+    "from": "0x567845983Df071999c3b8e680B3cED559312Bf45",
+    "contractAddress": "0x413f1776522196cDc944cFE0979Ee100069A057E",
+    "transactionIndex": 5,
+    "gasUsed": "152005",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x9d8e9df4dd38c3bb55eeccfd0e1e435efde70f5222945214f9ea0a496fbec113",
+    "transactionHash": "0xf178010430096f7c5b0b1f3c30a4c4785f3d00a8d16b36e5c8146c4523d5b523",
+    "logs": [],
+    "blockNumber": 29089569,
+    "cumulativeGasUsed": "921561",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "e09626273db8309168a0ed8013d8966b",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256[5]\",\"name\":\"_publicInputs\",\"type\":\"uint256[5]\"},{\"internalType\":\"bytes\",\"name\":\"_proof\",\"type\":\"bytes\"}],\"name\":\"verify\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/mocks/MockVerifier.sol\":\"DepositVerifier\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":solmate/=lib/solmate/src/\",\":weird-erc20/=lib/weird-erc20/src/\"]},\"sources\":{\"contracts/IVerifier.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.17;\\n\\ninterface IDepositVerifier {\\n    function verify(\\n        uint256[5] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) external view returns (bool);\\n}\\n\\ninterface IWithdrawVerifier {\\n    function verify(\\n        uint256[5] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) external view returns (bool);\\n}\\n\\ninterface ISwapVerifier {\\n    function verify(\\n        uint256[4] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) external view returns (bool);\\n}\\n\\ninterface IFinalizeVerifier {\\n    function verify(\\n        uint256[3] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) external view returns (bool);\\n}\\n\",\"keccak256\":\"0x9abb94139f2ce3b43e24529956ac86e8c9bfaf956526375b7bfdf8fa767fcfa8\",\"license\":\"MIT\"},\"contracts/mocks/MockVerifier.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.17;\\n\\nimport {\\n    IDepositVerifier,\\n    IWithdrawVerifier,\\n    ISwapVerifier,\\n    IFinalizeVerifier\\n} from \\\"../IVerifier.sol\\\";\\n\\ncontract DepositVerifier is IDepositVerifier {\\n    function verify(\\n        uint256[5] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) override view public returns(bool) {\\n        return true;\\n    }\\n}\\n\\ncontract WithdrawVerifier is IWithdrawVerifier {\\n    function verify(\\n        uint256[5] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) override view public returns(bool) {\\n        return true;\\n    }\\n}\\n\\ncontract SwapVerifier is ISwapVerifier {\\n    function verify(\\n        uint256[4] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) override view public returns(bool) {\\n        return true;\\n    }\\n}\\n\\ncontract FinalizeVerifier is IFinalizeVerifier {\\n    function verify(\\n        uint256[3] calldata _publicInputs,\\n        bytes calldata _proof\\n    ) override view public returns(bool) {\\n        return true;\\n    }\\n}\",\"keccak256\":\"0x25d8967be874b9067194956c6ec5510654c2d6511de6bc33508430ac80d92ddf\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506101ca806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063839ded6514610030575b600080fd5b61004a600480360381019061004591906100fe565b610060565b6040516100579190610179565b60405180910390f35b6000600190509392505050565b600080fd5b600080fd5b600080fd5b60008190508260206005028201111561009857610097610077565b5b92915050565b600080fd5b600080fd5b60008083601f8401126100be576100bd61009e565b5b8235905067ffffffffffffffff8111156100db576100da6100a3565b5b6020830191508360018202830111156100f7576100f6610077565b5b9250929050565b600080600060c084860312156101175761011661006d565b5b60006101258682870161007c565b93505060a084013567ffffffffffffffff81111561014657610145610072565b5b610152868287016100a8565b92509250509250925092565b60008115159050919050565b6101738161015e565b82525050565b600060208201905061018e600083018461016a565b9291505056fea26469706673582212205739beb75fa45507809d8ac437d195a6ba7d1fb3c3f9831f094267d985b8844a64736f6c63430008110033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063839ded6514610030575b600080fd5b61004a600480360381019061004591906100fe565b610060565b6040516100579190610179565b60405180910390f35b6000600190509392505050565b600080fd5b600080fd5b600080fd5b60008190508260206005028201111561009857610097610077565b5b92915050565b600080fd5b600080fd5b60008083601f8401126100be576100bd61009e565b5b8235905067ffffffffffffffff8111156100db576100da6100a3565b5b6020830191508360018202830111156100f7576100f6610077565b5b9250929050565b600080600060c084860312156101175761011661006d565b5b60006101258682870161007c565b93505060a084013567ffffffffffffffff81111561014657610145610072565b5b610152868287016100a8565b92509250509250925092565b60008115159050919050565b6101738161015e565b82525050565b600060208201905061018e600083018461016a565b9291505056fea26469706673582212205739beb75fa45507809d8ac437d195a6ba7d1fb3c3f9831f094267d985b8844a64736f6c63430008110033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

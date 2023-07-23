@@ -1,0 +1,65 @@
+{
+  "address": "0x2a87Cce88cA9E9cf7C9adC48b7C3cf74Fda34751",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "xL",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "xR",
+          "type": "uint256"
+        }
+      ],
+      "name": "hash",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "xO",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x2efd8bc1cb07a27ca17481e6ee74a23599f049a76ce0de3b90a577166f4134cc",
+  "receipt": {
+    "to": null,
+    "from": "0x567845983Df071999c3b8e680B3cED559312Bf45",
+    "contractAddress": "0x2a87Cce88cA9E9cf7C9adC48b7C3cf74Fda34751",
+    "transactionIndex": 0,
+    "gasUsed": "191869",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xc5a6505fa565f2975fe5de7b8f6a141b2b08941704af76ce68911d8bf8a137cd",
+    "transactionHash": "0x2efd8bc1cb07a27ca17481e6ee74a23599f049a76ce0de3b90a577166f4134cc",
+    "logs": [],
+    "blockNumber": 29089575,
+    "cumulativeGasUsed": "191869",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "e09626273db8309168a0ed8013d8966b",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"xL\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"xR\",\"type\":\"uint256\"}],\"name\":\"hash\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"xO\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/mocks/MockHasher.sol\":\"MockHasher\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":solmate/=lib/solmate/src/\",\":weird-erc20/=lib/weird-erc20/src/\"]},\"sources\":{\"contracts/MerkleTree.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.17;\\n\\ninterface IHasher {\\n    function hash(uint256 xL, uint256 xR) external pure returns (uint256 xO);\\n}\\n\\ncontract MerkleTree {\\n    uint256 public constant FIELD_SIZE = type(uint256).max;\\n    uint256 public constant ZERO_VALUE = 0;\\n    IHasher public immutable hasher;\\n\\n    uint32 public levels;\\n\\n    // the following variables are made public for easier testing and debugging and\\n    // are not supposed to be accessed in regular code\\n\\n    // filledSubtrees and roots could be bytes32[size], but using mappings makes it cheaper because\\n    // it removes index range check on every interaction\\n    mapping(uint256 => bytes32) public filledSubtrees;\\n    bytes32 public root;\\n    uint32 public nextIndex = 0;\\n\\n    constructor(uint32 _levels, IHasher _hasher) {\\n        require(_levels > 0, \\\"_levels should be greater than zero\\\");\\n        require(_levels < 32, \\\"_levels should be less than 32\\\");\\n        levels = _levels;\\n        hasher = _hasher;\\n\\n        for (uint32 i = 0; i < _levels; i++) {\\n            filledSubtrees[i] = zeros(i);\\n        }\\n\\n        root = zeros(_levels - 1);\\n    }\\n\\n    /**\\n    @dev Hash 2 tree leaves, returns MiMC(_left, _right)\\n  */\\n    function hashLeftRight(\\n        IHasher _hasher,\\n        bytes32 _left,\\n        bytes32 _right\\n    ) public pure returns (bytes32) {\\n        return bytes32(_hasher.hash(uint256(_left), uint256(_right)));\\n    }\\n\\n    function _insert(bytes32 _leaf) internal returns (uint32 index) {\\n        uint32 _nextIndex = nextIndex;\\n        require(\\n            _nextIndex != uint32(2) ** levels,\\n            \\\"Merkle tree is full. No more leaves can be added\\\"\\n        );\\n        uint32 currentIndex = _nextIndex;\\n        bytes32 currentLevelHash = _leaf;\\n        bytes32 left;\\n        bytes32 right;\\n\\n        for (uint32 i = 0; i < levels; i++) {\\n            if (currentIndex % 2 == 0) {\\n                left = currentLevelHash;\\n                right = zeros(i);\\n                filledSubtrees[i] = currentLevelHash;\\n            } else {\\n                left = filledSubtrees[i];\\n                right = currentLevelHash;\\n            }\\n            currentLevelHash = hashLeftRight(hasher, left, right);\\n            currentIndex /= 2;\\n        }\\n\\n        nextIndex = _nextIndex + 1;\\n        return _nextIndex;\\n    }\\n\\n    /// @dev provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels\\n    function zeros(uint256 i) public view returns (bytes32) {\\n        require(i < uint32(levels), \\\"index out of bound\\\");\\n        return 0;\\n    }\\n}\\n\",\"keccak256\":\"0x9440bd2ababa6bcfde6d064f31fc6932aba99b1a390c34df054cb0a996ae2870\",\"license\":\"MIT\"},\"contracts/mocks/MockHasher.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.17;\\n\\nimport {IHasher} from \\\"../MerkleTree.sol\\\";\\n\\n\\ncontract MockHasher is IHasher {\\n    function hash(uint256 xL, uint256 xR) external override pure returns (uint256 xO) {\\n        return xL / 17 * 7 + xR / 37 * 17;\\n    }\\n}\",\"keccak256\":\"0x570ab0030194d34ec9d55b363ad458ee5e6dd3bd8b9553b6bd4252ac4c22ce32\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610286806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063a78dac0d14610030575b600080fd5b61004a600480360381019061004591906100e1565b610060565b6040516100579190610130565b60405180910390f35b6000601160258361007191906101a9565b61007b91906101da565b600760118561008a91906101a9565b61009491906101da565b61009e919061021c565b905092915050565b600080fd5b6000819050919050565b6100be816100ab565b81146100c957600080fd5b50565b6000813590506100db816100b5565b92915050565b600080604083850312156100f8576100f76100a6565b5b6000610106858286016100cc565b9250506020610117858286016100cc565b9150509250929050565b61012a816100ab565b82525050565b60006020820190506101456000830184610121565b92915050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b60006101b4826100ab565b91506101bf836100ab565b9250826101cf576101ce61014b565b5b828204905092915050565b60006101e5826100ab565b91506101f0836100ab565b92508282026101fe816100ab565b915082820484148315176102155761021461017a565b5b5092915050565b6000610227826100ab565b9150610232836100ab565b925082820190508082111561024a5761024961017a565b5b9291505056fea264697066735822122034391ed67fbc0a8e78a8532b4c02aeb45628f7267c5823d826cd1298df91bd3564736f6c63430008110033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063a78dac0d14610030575b600080fd5b61004a600480360381019061004591906100e1565b610060565b6040516100579190610130565b60405180910390f35b6000601160258361007191906101a9565b61007b91906101da565b600760118561008a91906101a9565b61009491906101da565b61009e919061021c565b905092915050565b600080fd5b6000819050919050565b6100be816100ab565b81146100c957600080fd5b50565b6000813590506100db816100b5565b92915050565b600080604083850312156100f8576100f76100a6565b5b6000610106858286016100cc565b9250506020610117858286016100cc565b9150509250929050565b61012a816100ab565b82525050565b60006020820190506101456000830184610121565b92915050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b60006101b4826100ab565b91506101bf836100ab565b9250826101cf576101ce61014b565b5b828204905092915050565b60006101e5826100ab565b91506101f0836100ab565b92508282026101fe816100ab565b915082820484148315176102155761021461017a565b5b5092915050565b6000610227826100ab565b9150610232836100ab565b925082820190508082111561024a5761024961017a565b5b9291505056fea264697066735822122034391ed67fbc0a8e78a8532b4c02aeb45628f7267c5823d826cd1298df91bd3564736f6c63430008110033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

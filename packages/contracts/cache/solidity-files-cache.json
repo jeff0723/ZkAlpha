@@ -114,7 +114,7 @@
       ]
     },
     "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/Relayer.sol": {
-      "lastModificationDate": 1690078960113,
+      "lastModificationDate": 1690084020424,
       "contentHash": "8847a886ae4d29945df427f0f69aa462",
       "sourceName": "contracts/Relayer.sol",
       "solcConfig": {
@@ -226,7 +226,7 @@
       ]
     },
     "/Users/Justa/Desktop/hackathons/ZkAlpha/packages/contracts/contracts/Vault.sol": {
-      "lastModificationDate": 1690080891304,
+      "lastModificationDate": 1690084002919,
       "contentHash": "303b0caf58184fc2542d037853b67c6c",
       "sourceName": "contracts/Vault.sol",
       "solcConfig": {

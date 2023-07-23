@@ -1,2 +1,3 @@
-export const VAULT_ADDRESS = "0x"
+export const VAULT_ADDRESS = "0x";
+export const RELAYER_ADDRESS = "0xE4488FC7e7950e662DA5C489EFEf1A3FCa800f69";
 export const USDC_ADDRESS = "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83" as `0x${string}`
