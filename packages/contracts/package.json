@@ -22,6 +22,7 @@
     "hardhat-contract-sizer": "^2.10.0",
     "hardhat-deploy": "^0.11.34",
     "hardhat-gas-reporter": "^1.0.9",
+    "node-fetch": "^3.3.1",
     "solidity-coverage": "^0.8.4",
     "solmate": "^6.1.0",
     "ts-node": "^10.9.1",
